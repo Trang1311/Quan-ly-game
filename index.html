@@ -177,7 +177,10 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  onSnapshot
+  onSnapshot,
+  getDocs,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
 /* CONFIG FIREBASE */
@@ -197,6 +200,69 @@ let data = [];
 let editId = null;
 
 const colRef = collection(db, "games");
+
+/* ===== DATA DEFAULT (IMPORT 1 LẦN) ===== */
+const defaultData = [
+  {game:"Lords Mobile",forum:"PA",checkin:"27/03/2026 10:52:04",expired:"2026-04-16",note:"",active:true},
+  {game:"Warpath",forum:"PA",checkin:"27/03/2026 11:08:27",expired:"2026-04-16",note:"",active:true},
+  {game:"Where Wind Meet",forum:"PA",checkin:"30/03/2026 15:46:44",expired:"2026-04-19",note:"",active:true},
+  {game:"Goddess Of Victory: Nike",forum:"PA",checkin:"27/03/2026 11:26:26",expired:"2026-04-16",note:"",active:true},
+  {game:"Pokemon Go",forum:"PA",checkin:"27/03/2026 12:08:34",expired:"2026-04-16",note:"",active:true},
+  {game:"Grand Summoners",forum:"PA",checkin:"27/03/2026 12:12:35",expired:"2026-04-16",note:"",active:true},
+  {game:"Azurlane",forum:"PA",checkin:"27/03/2026 13:17:19",expired:"2026-04-16",note:"Thiếu hình acc 113",active:true},
+  {game:"Tower Of Fantasy",forum:"PA",checkin:"27/03/2026 13:35:12",expired:"2026-04-16",note:"",active:true},
+  {game:"Honkai Star Rail",forum:"PA",checkin:"27/03/2026 13:39:42",expired:"2026-04-16",note:"",active:true},
+  {game:"Wuthering Wave",forum:"PA",checkin:"27/03/2026 13:50:42",expired:"2026-04-16",note:"",active:true},
+  {game:"The seven deadly sins",forum:"PA",checkin:"27/03/2026 13:50:42",expired:"2026-04-16",note:"",active:true},
+  {game:"Dragonheir Silent Gods",forum:"PA",checkin:"27/03/2026 13:52:35",expired:"2026-04-16",note:"",active:true},
+  {game:"Reverse: 1999",forum:"PA",checkin:"27/03/2026 13:54:15",expired:"2026-04-16",note:"",active:true},
+  {game:"PUBG MOBILE",forum:"PA",checkin:"27/03/2026 13:56:13",expired:"2026-04-16",note:"",active:true},
+  {game:"Watcher Of Reams",forum:"PA",checkin:"27/03/2026 14:00:44",expired:"2026-04-16",note:"",active:true},
+  {game:"Umamusume",forum:"PA",checkin:"27/03/2026 14:04:03",expired:"2026-04-16",note:"",active:true},
+  {game:"Solo Leveling Arise",forum:"PA",checkin:"27/03/2026 14:11:23",expired:"2026-04-16",note:"",active:true},
+  {game:"Marvel Rivals",forum:"PA",checkin:"27/03/2026 14:08:08",expired:"2026-04-16",note:"Hết Hàng",active:true},
+  {game:"Seven Knights Re:Birth",forum:"PA",checkin:"27/03/2026 14:36:40",expired:"2026-04-16",note:"",active:true},
+  {game:"Dragon Traveler",forum:"PA",checkin:"27/03/2026 14:36:08",expired:"2026-04-16",note:"",active:true},
+  {game:"Pokemon TCG Pocket",forum:"PA",checkin:"27/03/2026 14:41:38",expired:"2026-04-16",note:"",active:true},
+
+  {game:"Lords Mobile",forum:"Eldorado",checkin:"27/03/2026 14:42:20",expired:"2026-04-16",note:"",active:true},
+  {game:"Roblox",forum:"Eldorado",checkin:"27/03/2026 15:35:51",expired:"2026-04-16",note:"",active:true},
+  {game:"Where Wind Meet",forum:"Eldorado",checkin:"27/03/2026 14:43:42",expired:"2026-04-16",note:"",active:true},
+  {game:"Goddess Of Victory: Nike",forum:"Eldorado",checkin:"27/03/2026 15:23:07",expired:"2026-04-16",note:"",active:true},
+  {game:"Pokemon Go",forum:"Eldorado",checkin:"27/03/2026 15:23:57",expired:"2026-04-16",note:"",active:true},
+  {game:"Tower Of Fantasy",forum:"Eldorado",checkin:"27/03/2026 15:24:43",expired:"2026-04-16",note:"",active:true},
+  {game:"Honkai Star Rail",forum:"Eldorado",checkin:"27/03/2026 15:25:04",expired:"2026-04-16",note:"",active:true},
+  {game:"Wuthering Wave",forum:"Eldorado",checkin:"27/03/2026 15:25:43",expired:"2026-04-16",note:"",active:true},
+  {game:"The seven deadly sins",forum:"Eldorado",checkin:"27/03/2026 15:27:59",expired:"2026-04-16",note:"",active:true},
+  {game:"KAIJU NO. 8 THE GAME",forum:"Eldorado",checkin:"27/03/2026 15:44:54",expired:"2026-04-16",note:"",active:true},
+  {game:"PUBG MOBILE",forum:"Eldorado",checkin:"27/03/2026 15:32:21",expired:"2026-04-16",note:"",active:true},
+  {game:"Watcher Of Reams",forum:"Eldorado",checkin:"27/03/2026 15:33:42",expired:"2026-04-16",note:"",active:true},
+  {game:"Umamusume",forum:"Eldorado",checkin:"27/03/2026 15:34:23",expired:"2026-04-16",note:"",active:true}
+];
+
+/* ===== IMPORT DATA ===== */
+async function importData(){
+  for(const item of defaultData){
+    const q = query(
+      colRef,
+      where("game","==",item.game),
+      where("forum","==",item.forum)
+    );
+
+    const snap = await getDocs(q);
+
+    if(snap.empty){
+      await addDoc(colRef,item);
+      console.log("✅ Added:",item.game);
+    }else{
+      console.log("⚠️ Exists:",item.game);
+    }
+  }
+
+  alert("🚀 Import xong!");
+}
+
+window.importData = importData;
 
 /* ===== UTIL ===== */
 function getToday(){
@@ -269,11 +335,6 @@ window.render = function(){
     var s=getStatus(r);
     var d=getDaysLeft(r.expired);
     var dayStr=d<0?'Đã hết':d+'d';
-
-    var actionBtn=r.active
-      ?`<button class="btn-checkout" onclick="checkout('${r.id}')">Check-out</button>`
-      :`<button class="btn-checkin" onclick="checkin('${r.id}')">Check-in</button>`;
-
     html+=`
     <tr>
       <td>${i+1}</td>
@@ -309,9 +370,7 @@ window.saveEntry = async function(){
   }
 
   if(editId){
-    await updateDoc(doc(db,"games",editId),{
-      game,forum,expired,note
-    });
+    await updateDoc(doc(db,"games",editId),{game,forum,expired,note});
   }else{
     await addDoc(colRef,{
       game,forum,expired,note,
