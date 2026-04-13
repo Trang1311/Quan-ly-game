@@ -168,62 +168,37 @@ tbody tr:hover{background:#fafaf6}
 </div>
 </div>
 
-<script>
-var STORAGE_KEY = 'game_accounts_v1';
-var nextId = 100;
-var editId = null;
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  deleteDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-var defaultData = [
-  {id:1,game:"Lords Mobile",forum:"PA",checkin:"27/03/2026 10:52:04",expired:"2026-04-16",note:"",active:true},
-  {id:2,game:"Warpath",forum:"PA",checkin:"27/03/2026 11:08:27",expired:"2026-04-16",note:"",active:true},
-  {id:3,game:"Where Wind Meet",forum:"PA",checkin:"30/03/2026 15:46:44",expired:"2026-04-19",note:"",active:true},
-  {id:4,game:"Goddess Of Victory: Nike",forum:"PA",checkin:"27/03/2026 11:26:26",expired:"2026-04-16",note:"",active:true},
-  {id:5,game:"Pokemon Go",forum:"PA",checkin:"27/03/2026 12:08:34",expired:"2026-04-16",note:"",active:true},
-  {id:6,game:"Grand Summoners",forum:"PA",checkin:"27/03/2026 12:12:35",expired:"2026-04-16",note:"",active:true},
-  {id:7,game:"Azurlane",forum:"PA",checkin:"27/03/2026 13:17:19",expired:"2026-04-16",note:"Thiếu hình acc 113",active:true},
-  {id:8,game:"Tower Of Fantasy",forum:"PA",checkin:"27/03/2026 13:35:12",expired:"2026-04-16",note:"",active:true},
-  {id:9,game:"Honkai Star Rail",forum:"PA",checkin:"27/03/2026 13:39:42",expired:"2026-04-16",note:"",active:true},
-  {id:10,game:"Wuthering Wave",forum:"PA",checkin:"27/03/2026 13:50:42",expired:"2026-04-16",note:"",active:true},
-  {id:11,game:"The seven deadly sins",forum:"PA",checkin:"27/03/2026 13:50:42",expired:"2026-04-16",note:"",active:true},
-  {id:12,game:"Dragonheir Silent Gods",forum:"PA",checkin:"27/03/2026 13:52:35",expired:"2026-04-16",note:"",active:true},
-  {id:13,game:"Reverse: 1999",forum:"PA",checkin:"27/03/2026 13:54:15",expired:"2026-04-16",note:"",active:true},
-  {id:14,game:"PUBG MOBILE",forum:"PA",checkin:"27/03/2026 13:56:13",expired:"2026-04-16",note:"",active:true},
-  {id:15,game:"Watcher Of Reams",forum:"PA",checkin:"27/03/2026 14:00:44",expired:"2026-04-16",note:"",active:true},
-  {id:16,game:"Umamusume",forum:"PA",checkin:"27/03/2026 14:04:03",expired:"2026-04-16",note:"",active:true},
-  {id:17,game:"Solo Leveling Arise",forum:"PA",checkin:"27/03/2026 14:11:23",expired:"2026-04-16",note:"",active:true},
-  {id:18,game:"Marvel Rivals",forum:"PA",checkin:"27/03/2026 14:08:08",expired:"2026-04-16",note:"Hết Hàng",active:true},
-  {id:19,game:"Seven Knights Re:Birth",forum:"PA",checkin:"27/03/2026 14:36:40",expired:"2026-04-16",note:"",active:true},
-  {id:20,game:"Dragon Traveler",forum:"PA",checkin:"27/03/2026 14:36:08",expired:"2026-04-16",note:"",active:true},
-  {id:21,game:"Pokemon TCG Pocket",forum:"PA",checkin:"27/03/2026 14:41:38",expired:"2026-04-16",note:"",active:true},
-  {id:22,game:"Lords Mobile",forum:"Eldorado",checkin:"27/03/2026 14:42:20",expired:"2026-04-16",note:"",active:true},
-  {id:23,game:"Roblox",forum:"Eldorado",checkin:"27/03/2026 15:35:51",expired:"2026-04-16",note:"",active:true},
-  {id:24,game:"Where Wind Meet",forum:"Eldorado",checkin:"27/03/2026 14:43:42",expired:"2026-04-16",note:"",active:true},
-  {id:25,game:"Goddess Of Victory: Nike",forum:"Eldorado",checkin:"27/03/2026 15:23:07",expired:"2026-04-16",note:"",active:true},
-  {id:26,game:"Pokemon Go",forum:"Eldorado",checkin:"27/03/2026 15:23:57",expired:"2026-04-16",note:"",active:true},
-  {id:27,game:"Tower Of Fantasy",forum:"Eldorado",checkin:"27/03/2026 15:24:43",expired:"2026-04-16",note:"",active:true},
-  {id:28,game:"Honkai Star Rail",forum:"Eldorado",checkin:"27/03/2026 15:25:04",expired:"2026-04-16",note:"",active:true},
-  {id:29,game:"Wuthering Wave",forum:"Eldorado",checkin:"27/03/2026 15:25:43",expired:"2026-04-16",note:"",active:true},
-  {id:30,game:"The seven deadly sins",forum:"Eldorado",checkin:"27/03/2026 15:27:59",expired:"2026-04-16",note:"",active:true},
-  {id:31,game:"KAIJU NO. 8 THE GAME",forum:"Eldorado",checkin:"27/03/2026 15:44:54",expired:"2026-04-16",note:"",active:true},
-  {id:32,game:"PUBG MOBILE",forum:"Eldorado",checkin:"27/03/2026 15:32:21",expired:"2026-04-16",note:"",active:true},
-  {id:33,game:"Watcher Of Reams",forum:"Eldorado",checkin:"27/03/2026 15:33:42",expired:"2026-04-16",note:"",active:true},
-  {id:34,game:"Umamusume",forum:"Eldorado",checkin:"27/03/2026 15:34:23",expired:"2026-04-16",note:"",active:true},
-];
+/* CONFIG FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyB--8tf1AZWyuR0XbC-vGkbBQ1HwbqBcTA",
+  authDomain: "mrbull-e2e64.firebaseapp.com",
+  projectId: "mrbull-e2e64",
+  storageBucket: "mrbull-e2e64.firebasestorage.app",
+  messagingSenderId: "113835433005",
+  appId: "1:113835433005:web:78d661334c776b73b1eca4"
+};
 
-function loadData(){
-  try{
-    var s=localStorage.getItem(STORAGE_KEY);
-    if(s){var d=JSON.parse(s);if(d&&d.length){return d;}}
-  }catch(e){}
-  return JSON.parse(JSON.stringify(defaultData));
-}
-function saveData(){
-  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}
-}
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-var data = loadData();
-nextId = Math.max.apply(null, data.map(function(r){return r.id;})) + 1;
+let data = [];
+let editId = null;
 
+const colRef = collection(db, "games");
+
+/* ===== UTIL ===== */
 function getToday(){
   var now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -254,20 +229,32 @@ function nowStr(){
   return n.toLocaleDateString('vi-VN')+' '+n.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
-function render(){
+/* ===== REALTIME LOAD ===== */
+onSnapshot(colRef, snapshot => {
+  data = snapshot.docs.map(d => ({
+    id: d.id,
+    ...d.data()
+  }));
+  render();
+});
+
+/* ===== RENDER ===== */
+window.render = function(){
   var q=(document.getElementById('search').value||'').toLowerCase();
   var ff=document.getElementById('filter-forum').value;
   var fs=document.getElementById('filter-status').value;
+
   var cnt={Active:0,Soon:0,Urgent:0,Expired:0};
-  data.forEach(function(r){cnt[getStatus(r)]++;});
+  data.forEach(r=>cnt[getStatus(r)]++);
+
   document.getElementById('cnt-active').textContent=cnt.Active;
   document.getElementById('cnt-soon').textContent=cnt.Soon;
   document.getElementById('cnt-urgent').textContent=cnt.Urgent;
   document.getElementById('cnt-expired').textContent=cnt.Expired;
 
-  var rows=data.filter(function(r){
+  var rows=data.filter(r=>{
     var s=getStatus(r);
-    if(q && r.game.toLowerCase().indexOf(q)<0) return false;
+    if(q && !r.game.toLowerCase().includes(q)) return false;
     if(ff && r.forum!==ff) return false;
     if(fs && s!==fs) return false;
     return true;
@@ -277,87 +264,103 @@ function render(){
   if(!rows.length){
     html='<tr><td colspan="9"><div class="empty">Không có dữ liệu</div></td></tr>';
   }
-  rows.forEach(function(r,i){
+
+  rows.forEach((r,i)=>{
     var s=getStatus(r);
     var d=getDaysLeft(r.expired);
     var dayStr=d<0?'Đã hết':d+'d';
-    var actionBtn=r.active
-      ?'<button class="btn-checkout" onclick="checkout('+r.id+')">Check-out</button>'
-      :'<button class="btn-checkin" onclick="checkin('+r.id+')">Check-in</button>';
-    html+='<tr>'
-      +'<td style="color:#999;font-size:12px">'+(i+1)+'</td>'
-      +'<td style="font-weight:600">'+r.game+'</td>'
-      +'<td>'+r.forum+'</td>'
-      +'<td style="font-size:12px;color:#666">'+r.checkin+'</td>'
-      +'<td>'+fmtExpired(r.expired)+'</td>'
-      +'<td style="font-weight:700;color:'+(d<=2&&d>=0?'#c0522a':d<0?'#A32D2D':'#333')+'">'+dayStr+'</td>'
-      +'<td>'+badgeHtml(s)+'</td>'
-      +'<td style="font-size:12px;color:#888">'+r.note+'</td>'
-      +'<td><div class="action-col">'
-        +actionBtn
-        +'<div class="row-actions">'
-          +'<button class="btn-edit" onclick="editEntry('+r.id+')">Sửa</button>'
-          +'<button class="btn-del" onclick="deleteEntry('+r.id+')">Xoá</button>'
-        +'</div>'
-      +'</div></td>'
-      +'</tr>';
-  });
-  document.getElementById('tbl-body').innerHTML=html;
-}
 
-function checkout(id){
-  var r=data.find(function(x){return x.id===id;});
-  if(r){r.active=false;saveData();render();}
-}
-function checkin(id){
-  var r=data.find(function(x){return x.id===id;});
-  if(r){r.active=true;r.checkin=nowStr();saveData();render();}
-}
-function deleteEntry(id){
-  if(!confirm('Xác nhận xoá?')) return;
-  data=data.filter(function(x){return x.id!==id;});
-  saveData();render();
-}
-function openAdd(){
-  editId=null;
-  document.getElementById('modal-title').textContent='Thêm tài khoản game';
-  document.getElementById('f-game').value='';
-  document.getElementById('f-forum').value='PA';
-  var d=new Date(); d.setDate(d.getDate()+20);
-  document.getElementById('f-expired').value=d.toISOString().split('T')[0];
-  document.getElementById('f-note').value='';
-  document.getElementById('modal').classList.add('show');
-}
-function editEntry(id){
-  var r=data.find(function(x){return x.id===id;});
-  if(!r) return;
+    var actionBtn=r.active
+      ?`<button class="btn-checkout" onclick="checkout('${r.id}')">Check-out</button>`
+      :`<button class="btn-checkin" onclick="checkin('${r.id}')">Check-in</button>`;
+
+    html+=`
+    <tr>
+      <td>${i+1}</td>
+      <td><b>${r.game}</b></td>
+      <td>${r.forum}</td>
+      <td>${r.checkin}</td>
+      <td>${fmtExpired(r.expired)}</td>
+      <td>${dayStr}</td>
+      <td>${badgeHtml(s)}</td>
+      <td>${r.note||''}</td>
+      <td>
+        ${actionBtn}
+        <button onclick="editEntry('${r.id}')">Sửa</button>
+        <button onclick="deleteEntry('${r.id}')">Xoá</button>
+      </td>
+    </tr>`;
+  });
+
+  document.getElementById('tbl-body').innerHTML=html;
+};
+
+/* ===== CRUD ===== */
+
+window.saveEntry = async function(){
+  let game=document.getElementById('f-game').value.trim();
+  let forum=document.getElementById('f-forum').value;
+  let expired=document.getElementById('f-expired').value;
+  let note=document.getElementById('f-note').value.trim();
+
+  if(!game||!expired){
+    alert('Thiếu dữ liệu');
+    return;
+  }
+
+  if(editId){
+    await updateDoc(doc(db,"games",editId),{
+      game,forum,expired,note
+    });
+  }else{
+    await addDoc(colRef,{
+      game,forum,expired,note,
+      active:true,
+      checkin:nowStr()
+    });
+  }
+
+  closeModal();
+};
+
+window.deleteEntry = async function(id){
+  if(confirm("Xoá?")){
+    await deleteDoc(doc(db,"games",id));
+  }
+};
+
+window.checkout = async function(id){
+  await updateDoc(doc(db,"games",id),{active:false});
+};
+
+window.checkin = async function(id){
+  await updateDoc(doc(db,"games",id),{
+    active:true,
+    checkin:nowStr()
+  });
+};
+
+window.editEntry = function(id){
+  var r=data.find(x=>x.id===id);
   editId=id;
-  document.getElementById('modal-title').textContent='Sửa tài khoản game';
+
   document.getElementById('f-game').value=r.game;
   document.getElementById('f-forum').value=r.forum;
   document.getElementById('f-expired').value=r.expired;
   document.getElementById('f-note').value=r.note;
+
   document.getElementById('modal').classList.add('show');
-}
-function closeModal(){document.getElementById('modal').classList.remove('show');}
-function saveEntry(){
-  var game=document.getElementById('f-game').value.trim();
-  var forum=document.getElementById('f-forum').value;
-  var expired=document.getElementById('f-expired').value;
-  var note=document.getElementById('f-note').value.trim();
-  if(!game||!expired){alert('Vui lòng điền đầy đủ thông tin!');return;}
-  if(editId){
-    var r=data.find(function(x){return x.id===editId;});
-    if(r){r.game=game;r.forum=forum;r.expired=expired;r.note=note;}
-  } else {
-    data.push({id:nextId++,game:game,forum:forum,checkin:nowStr(),expired:expired,note:note,active:true});
-  }
-  closeModal();saveData();render();
-}
-document.getElementById('modal').addEventListener('click',function(e){
-  if(e.target===this) closeModal();
-});
-render();
+};
+
+window.openAdd = function(){
+  editId=null;
+  document.getElementById('f-game').value='';
+  document.getElementById('modal').classList.add('show');
+};
+
+window.closeModal = function(){
+  document.getElementById('modal').classList.remove('show');
+};
 </script>
 </body>
 </html>
