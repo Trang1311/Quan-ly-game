@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản Lý Tài Khoản Game</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
+h1{font-size:18px;font-weight:600;margin-bottom:16px;color:#2d2d2d}
+.top-stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.stat-box{background:#fff;border:1px solid #e0e0d8;border-radius:8px;padding:10px 18px;display:flex;align-items:center;gap:10px;font-size:13px}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot-active{background:#3B6D11}.dot-soon{background:#b8860b}.dot-urgent{background:#c0522a}.dot-expired{background:#A32D2D}
+.stat-num{font-size:20px;font-weight:700}
+.controls{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.controls input,.controls select{
+  padding:9px 14px;border:1px solid #d8d8cc;border-radius:8px;
+  font-size:14px;background:#fff;color:#333;outline:none;min-width:180px
+}
+.controls input:focus,.controls select:focus{border-color:#aaa}
+.btn-add{
+  padding:9px 18px;background:#2D6A4F;color:#fff;border:none;
+  border-radius:8px;font-size:14px;cursor:pointer;font-weight:600;margin-left:auto
+}
+.btn-add:hover{background:#1B4332}
+.table-wrap{background:#fff;border:1px solid #e0e0d8;border-radius:10px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{
+  background:#f0efe8;padding:10px 12px;text-align:left;font-weight:600;
+  color:#555;border-bottom:1px solid #e0e0d8;white-space:nowrap
+}
+tbody td{padding:10px 12px;border-bottom:1px solid #f0efe8;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafaf6}
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-active{background:#d8f3dc;color:#1B4332}
+.badge-soon{background:#fff3cd;color:#856404}
+.badge-urgent{background:#fde5d4;color:#7B3F00}
+.badge-expired{background:#f8d7da;color:#721C24}
+.action-col{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+.btn-checkout{
+  padding:5px 14px;border:1.5px solid #ccc;border-radius:7px;background:#fff;
+  font-size:12px;cursor:pointer;font-weight:600;color:#333;width:100px
+}
+.btn-checkout:hover{background:#f0f0ea}
+.btn-checkin{
+  padding:5px 14px;border:1.5px solid #52B788;border-radius:7px;background:#d8f3dc;
+  font-size:12px;cursor:pointer;font-weight:600;color:#1B4332;width:100px
+}
+.btn-checkin:hover{background:#b7e4c7}
+.row-actions{display:flex;gap:6px;margin-top:3px}
+.btn-edit{
+  padding:4px 12px;border:1px solid #ccc;border-radius:6px;background:#fff;
+  font-size:12px;cursor:pointer;color:#444
+}
+.btn-edit:hover{background:#f0f0ea}
+.btn-del{
+  padding:4px 12px;border:1px solid #f5c2c7;border-radius:6px;background:#fff;
+  font-size:12px;cursor:pointer;color:#A32D2D
+}
+.btn-del:hover{background:#f8d7da}
+.empty{text-align:center;padding:30px;color:#999;font-size:14px}
+/* Modal */
+.modal-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);
+  align-items:center;justify-content:center;z-index:999
+}
+.modal-bg.show{display:flex}
+.modal{
+  background:#fff;border-radius:12px;padding:24px;width:380px;
+  max-width:95vw;box-shadow:0 8px 30px rgba(0,0,0,0.15)
+}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:18px;color:#2d2d2d}
+.form-row{margin-bottom:13px}
+.form-row label{display:block;font-size:12px;color:#666;margin-bottom:5px;font-weight:600}
+.form-row input,.form-row select,.form-row textarea{
+  width:100%;padding:8px 11px;border:1px solid #ddd;border-radius:7px;
+  font-size:13px;color:#333;outline:none
+}
+.form-row input:focus,.form-row select:focus{border-color:#2D6A4F}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.btn-save{
+  padding:8px 20px;background:#2D6A4F;color:#fff;border:none;
+  border-radius:7px;font-size:13px;cursor:pointer;font-weight:600
+}
+.btn-save:hover{background:#1B4332}
+.btn-cancel{
+  padding:8px 16px;border:1px solid #ccc;border-radius:7px;
+  background:#fff;color:#555;font-size:13px;cursor:pointer
+}
+.btn-cancel:hover{background:#f5f5f0}
+.note-warn{
+  background:#fff3cd;border:1px solid #ffc107;border-radius:6px;
+  padding:6px 12px;font-size:12px;color:#856404;margin-bottom:14px;text-align:center
+}
+@media(max-width:600px){
+  thead th:nth-child(1),tbody td:nth-child(1){display:none}
+  .controls input,.controls select{min-width:120px}
+}
+</style>
+</head>
+<body>
+<h1>Quản Lý Tài Khoản Game</h1>
+<div class="note-warn">Lưu Ý: PA không đăng Email ảo — Xa Thải Ngay lập tức nếu vi phạm</div>
+
+<div class="top-stats">
+  <div class="stat-box"><div class="dot dot-active"></div>Active<span class="stat-num" id="cnt-active">0</span></div>
+  <div class="stat-box"><div class="dot dot-soon"></div>Soon<span class="stat-num" id="cnt-soon">0</span></div>
+  <div class="stat-box"><div class="dot dot-urgent"></div>Urgent<span class="stat-num" id="cnt-urgent">0</span></div>
+  <div class="stat-box"><div class="dot dot-expired"></div>Expired<span class="stat-num" id="cnt-expired">0</span></div>
+</div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Tìm game..." oninput="render()">
+  <select id="filter-forum" onchange="render()">
+    <option value="">Tất cả Forum</option>
+    <option value="PA">PA</option>
+    <option value="Eldorado">Eldorado</option>
+  </select>
+  <select id="filter-status" onchange="render()">
+    <option value="">Tất cả trạng thái</option>
+    <option value="Active">Active</option>
+    <option value="Soon">Soon</option>
+    <option value="Urgent">Urgent</option>
+    <option value="Expired">Expired</option>
+  </select>
+  <button class="btn-add" onclick="openAdd()">+ Thêm mới</button>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Game Name</th>
+  <th>Forum</th>
+  <th>Check-in</th>
+  <th>Expired Date</th>
+  <th>Còn Lại</th>
+  <th>Status</th>
+  <th>Note</th>
+  <th>Hành động</th>
+</tr>
+</thead>
+<tbody id="tbl-body"></tbody>
+</table>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="modal">
+<div class="modal">
+  <h3 id="modal-title">Thêm tài khoản game</h3>
+  <div class="form-row"><label>Game Name</label><input id="f-game" type="text" placeholder="Nhập tên game..."></div>
+  <div class="form-row"><label>Forum</label>
+    <select id="f-forum">
+      <option value="PA">PA</option>
+      <option value="Eldorado">Eldorado</option>
+      <option value="Khác">Khác</option>
+    </select>
+  </div>
+  <div class="form-row"><label>Ngày hết hạn</label><input id="f-expired" type="date"></div>
+  <div class="form-row"><label>Ghi chú</label><input id="f-note" type="text" placeholder="Tuỳ chọn..."></div>
+  <div class="modal-actions">
+    <button class="btn-cancel" onclick="closeModal()">Huỷ</button>
+    <button class="btn-save" onclick="saveEntry()">Lưu</button>
+  </div>
+</div>
+</div>
+
+<script>
+var STORAGE_KEY = 'game_accounts_v1';
+var nextId = 100;
+var editId = null;
+
+var defaultData = [
+  {id:1,game:"Lords Mobile",forum:"PA",checkin:"27/03/2026 10:52:04",expired:"2026-04-16",note:"",active:true},
+  {id:2,game:"Warpath",forum:"PA",checkin:"27/03/2026 11:08:27",expired:"2026-04-16",note:"",active:true},
+  {id:3,game:"Where Wind Meet",forum:"PA",checkin:"30/03/2026 15:46:44",expired:"2026-04-19",note:"",active:true},
+  {id:4,game:"Goddess Of Victory: Nike",forum:"PA",checkin:"27/03/2026 11:26:26",expired:"2026-04-16",note:"",active:true},
+  {id:5,game:"Pokemon Go",forum:"PA",checkin:"27/03/2026 12:08:34",expired:"2026-04-16",note:"",active:true},
+  {id:6,game:"Grand Summoners",forum:"PA",checkin:"27/03/2026 12:12:35",expired:"2026-04-16",note:"",active:true},
+  {id:7,game:"Azurlane",forum:"PA",checkin:"27/03/2026 13:17:19",expired:"2026-04-16",note:"Thiếu hình acc 113",active:true},
+  {id:8,game:"Tower Of Fantasy",forum:"PA",checkin:"27/03/2026 13:35:12",expired:"2026-04-16",note:"",active:true},
+  {id:9,game:"Honkai Star Rail",forum:"PA",checkin:"27/03/2026 13:39:42",expired:"2026-04-16",note:"",active:true},
+  {id:10,game:"Wuthering Wave",forum:"PA",checkin:"27/03/2026 13:50:42",expired:"2026-04-16",note:"",active:true},
+  {id:11,game:"The seven deadly sins",forum:"PA",checkin:"27/03/2026 13:50:42",expired:"2026-04-16",note:"",active:true},
+  {id:12,game:"Dragonheir Silent Gods",forum:"PA",checkin:"27/03/2026 13:52:35",expired:"2026-04-16",note:"",active:true},
+  {id:13,game:"Reverse: 1999",forum:"PA",checkin:"27/03/2026 13:54:15",expired:"2026-04-16",note:"",active:true},
+  {id:14,game:"PUBG MOBILE",forum:"PA",checkin:"27/03/2026 13:56:13",expired:"2026-04-16",note:"",active:true},
+  {id:15,game:"Watcher Of Reams",forum:"PA",checkin:"27/03/2026 14:00:44",expired:"2026-04-16",note:"",active:true},
+  {id:16,game:"Umamusume",forum:"PA",checkin:"27/03/2026 14:04:03",expired:"2026-04-16",note:"",active:true},
+  {id:17,game:"Solo Leveling Arise",forum:"PA",checkin:"27/03/2026 14:11:23",expired:"2026-04-16",note:"",active:true},
+  {id:18,game:"Marvel Rivals",forum:"PA",checkin:"27/03/2026 14:08:08",expired:"2026-04-16",note:"Hết Hàng",active:true},
+  {id:19,game:"Seven Knights Re:Birth",forum:"PA",checkin:"27/03/2026 14:36:40",expired:"2026-04-16",note:"",active:true},
+  {id:20,game:"Dragon Traveler",forum:"PA",checkin:"27/03/2026 14:36:08",expired:"2026-04-16",note:"",active:true},
+  {id:21,game:"Pokemon TCG Pocket",forum:"PA",checkin:"27/03/2026 14:41:38",expired:"2026-04-16",note:"",active:true},
+  {id:22,game:"Lords Mobile",forum:"Eldorado",checkin:"27/03/2026 14:42:20",expired:"2026-04-16",note:"",active:true},
+  {id:23,game:"Roblox",forum:"Eldorado",checkin:"27/03/2026 15:35:51",expired:"2026-04-16",note:"",active:true},
+  {id:24,game:"Where Wind Meet",forum:"Eldorado",checkin:"27/03/2026 14:43:42",expired:"2026-04-16",note:"",active:true},
+  {id:25,game:"Goddess Of Victory: Nike",forum:"Eldorado",checkin:"27/03/2026 15:23:07",expired:"2026-04-16",note:"",active:true},
+  {id:26,game:"Pokemon Go",forum:"Eldorado",checkin:"27/03/2026 15:23:57",expired:"2026-04-16",note:"",active:true},
+  {id:27,game:"Tower Of Fantasy",forum:"Eldorado",checkin:"27/03/2026 15:24:43",expired:"2026-04-16",note:"",active:true},
+  {id:28,game:"Honkai Star Rail",forum:"Eldorado",checkin:"27/03/2026 15:25:04",expired:"2026-04-16",note:"",active:true},
+  {id:29,game:"Wuthering Wave",forum:"Eldorado",checkin:"27/03/2026 15:25:43",expired:"2026-04-16",note:"",active:true},
+  {id:30,game:"The seven deadly sins",forum:"Eldorado",checkin:"27/03/2026 15:27:59",expired:"2026-04-16",note:"",active:true},
+  {id:31,game:"KAIJU NO. 8 THE GAME",forum:"Eldorado",checkin:"27/03/2026 15:44:54",expired:"2026-04-16",note:"",active:true},
+  {id:32,game:"PUBG MOBILE",forum:"Eldorado",checkin:"27/03/2026 15:32:21",expired:"2026-04-16",note:"",active:true},
+  {id:33,game:"Watcher Of Reams",forum:"Eldorado",checkin:"27/03/2026 15:33:42",expired:"2026-04-16",note:"",active:true},
+  {id:34,game:"Umamusume",forum:"Eldorado",checkin:"27/03/2026 15:34:23",expired:"2026-04-16",note:"",active:true},
+];
+
+function loadData(){
+  try{
+    var s=localStorage.getItem(STORAGE_KEY);
+    if(s){var d=JSON.parse(s);if(d&&d.length){return d;}}
+  }catch(e){}
+  return JSON.parse(JSON.stringify(defaultData));
+}
+function saveData(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}
+}
+
+var data = loadData();
+nextId = Math.max.apply(null, data.map(function(r){return r.id;})) + 1;
+
+function getToday(){
+  var now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+function getDaysLeft(expiredStr){
+  var parts = expiredStr.split('-');
+  var exp = new Date(+parts[0], +parts[1]-1, +parts[2]);
+  var today = getToday();
+  return Math.round((exp - today)/(1000*60*60*24));
+}
+function getStatus(row){
+  if(!row.active) return 'Expired';
+  var d = getDaysLeft(row.expired);
+  if(d < 0) return 'Expired';
+  if(d <= 2) return 'Urgent';
+  if(d <= 5) return 'Soon';
+  return 'Active';
+}
+function badgeHtml(s){
+  var map={Active:'badge-active',Soon:'badge-soon',Urgent:'badge-urgent',Expired:'badge-expired'};
+  return '<span class="badge '+map[s]+'">'+s+'</span>';
+}
+function fmtExpired(str){
+  var p=str.split('-'); return p[2]+'/'+p[1]+'/'+p[0];
+}
+function nowStr(){
+  var n=new Date();
+  return n.toLocaleDateString('vi-VN')+' '+n.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+function render(){
+  var q=(document.getElementById('search').value||'').toLowerCase();
+  var ff=document.getElementById('filter-forum').value;
+  var fs=document.getElementById('filter-status').value;
+  var cnt={Active:0,Soon:0,Urgent:0,Expired:0};
+  data.forEach(function(r){cnt[getStatus(r)]++;});
+  document.getElementById('cnt-active').textContent=cnt.Active;
+  document.getElementById('cnt-soon').textContent=cnt.Soon;
+  document.getElementById('cnt-urgent').textContent=cnt.Urgent;
+  document.getElementById('cnt-expired').textContent=cnt.Expired;
+
+  var rows=data.filter(function(r){
+    var s=getStatus(r);
+    if(q && r.game.toLowerCase().indexOf(q)<0) return false;
+    if(ff && r.forum!==ff) return false;
+    if(fs && s!==fs) return false;
+    return true;
+  });
+
+  var html='';
+  if(!rows.length){
+    html='<tr><td colspan="9"><div class="empty">Không có dữ liệu</div></td></tr>';
+  }
+  rows.forEach(function(r,i){
+    var s=getStatus(r);
+    var d=getDaysLeft(r.expired);
+    var dayStr=d<0?'Đã hết':d+'d';
+    var actionBtn=r.active
+      ?'<button class="btn-checkout" onclick="checkout('+r.id+')">Check-out</button>'
+      :'<button class="btn-checkin" onclick="checkin('+r.id+')">Check-in</button>';
+    html+='<tr>'
+      +'<td style="color:#999;font-size:12px">'+(i+1)+'</td>'
+      +'<td style="font-weight:600">'+r.game+'</td>'
+      +'<td>'+r.forum+'</td>'
+      +'<td style="font-size:12px;color:#666">'+r.checkin+'</td>'
+      +'<td>'+fmtExpired(r.expired)+'</td>'
+      +'<td style="font-weight:700;color:'+(d<=2&&d>=0?'#c0522a':d<0?'#A32D2D':'#333')+'">'+dayStr+'</td>'
+      +'<td>'+badgeHtml(s)+'</td>'
+      +'<td style="font-size:12px;color:#888">'+r.note+'</td>'
+      +'<td><div class="action-col">'
+        +actionBtn
+        +'<div class="row-actions">'
+          +'<button class="btn-edit" onclick="editEntry('+r.id+')">Sửa</button>'
+          +'<button class="btn-del" onclick="deleteEntry('+r.id+')">Xoá</button>'
+        +'</div>'
+      +'</div></td>'
+      +'</tr>';
+  });
+  document.getElementById('tbl-body').innerHTML=html;
+}
+
+function checkout(id){
+  var r=data.find(function(x){return x.id===id;});
+  if(r){r.active=false;saveData();render();}
+}
+function checkin(id){
+  var r=data.find(function(x){return x.id===id;});
+  if(r){r.active=true;r.checkin=nowStr();saveData();render();}
+}
+function deleteEntry(id){
+  if(!confirm('Xác nhận xoá?')) return;
+  data=data.filter(function(x){return x.id!==id;});
+  saveData();render();
+}
+function openAdd(){
+  editId=null;
+  document.getElementById('modal-title').textContent='Thêm tài khoản game';
+  document.getElementById('f-game').value='';
+  document.getElementById('f-forum').value='PA';
+  var d=new Date(); d.setDate(d.getDate()+20);
+  document.getElementById('f-expired').value=d.toISOString().split('T')[0];
+  document.getElementById('f-note').value='';
+  document.getElementById('modal').classList.add('show');
+}
+function editEntry(id){
+  var r=data.find(function(x){return x.id===id;});
+  if(!r) return;
+  editId=id;
+  document.getElementById('modal-title').textContent='Sửa tài khoản game';
+  document.getElementById('f-game').value=r.game;
+  document.getElementById('f-forum').value=r.forum;
+  document.getElementById('f-expired').value=r.expired;
+  document.getElementById('f-note').value=r.note;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+function saveEntry(){
+  var game=document.getElementById('f-game').value.trim();
+  var forum=document.getElementById('f-forum').value;
+  var expired=document.getElementById('f-expired').value;
+  var note=document.getElementById('f-note').value.trim();
+  if(!game||!expired){alert('Vui lòng điền đầy đủ thông tin!');return;}
+  if(editId){
+    var r=data.find(function(x){return x.id===editId;});
+    if(r){r.game=game;r.forum=forum;r.expired=expired;r.note=note;}
+  } else {
+    data.push({id:nextId++,game:game,forum:forum,checkin:nowStr(),expired:expired,note:note,active:true});
+  }
+  closeModal();saveData();render();
+}
+document.getElementById('modal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+render();
+</script>
+</body>
+</html>
