@@ -397,7 +397,7 @@ window.render = function(){
 
 /* ===== CRUD ===== */
 
-.saveEntry = async function(){
+window.saveEntry = async function(){
   let game=document.getElementById('f-game').value.trim();
   let forum=document.getElementById('f-forum').value;
   let expired=document.getElementById('f-expired').value;
@@ -421,12 +421,12 @@ window.render = function(){
   closeModal();
 };
 
-.deleteEntry = async function(id){
+window.deleteEntry = async function(id){
   if(confirm("Xoá?")){
     await deleteDoc(doc(db,"games",id));
   }
 };
-.checkout = async function(id){ await updateDoc(doc(db,"games",id),{active:false}); }; 
+window.checkout = async function(id){ await updateDoc(doc(db,"games",id),{active:false}); }; 
 let lastClick = 0;
 
 window.checkin = async function(id){
