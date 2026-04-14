@@ -344,7 +344,7 @@ onSnapshot(colRef, snapshot => {
 });
 
 /* ===== RENDER ===== */
-.render = function(){
+window.render = function(){
   var q=(document.getElementById('search').value||'').toLowerCase();
   var ff=document.getElementById('filter-forum').value;
   var fs=document.getElementById('filter-status').value;
