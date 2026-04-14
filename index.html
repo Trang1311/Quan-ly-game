@@ -145,6 +145,7 @@ tbody tr:hover{background:#fafaf6}
     <option value="Expired">Expired</option>
   </select>
   <button class="btn-add" onclick="openAdd()">+ Thêm mới</button>
+  <button onclick="importData()">Import Data</button>
 </div>
 
 <div class="table-wrap">
@@ -366,7 +367,6 @@ window.render = function(){
       <td>${r.note||''}</td>
       <td>
   <div class="row-actions">
-  <button onclick="importData()">Import Data</button>
     <button class="btn-edit" onclick="editEntry('${r.id}')">✏️ Sửa</button>
     <button class="btn-del" onclick="deleteEntry('${r.id}')">🗑️ Xóa</button>
   </div>
