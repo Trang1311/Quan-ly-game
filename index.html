@@ -365,10 +365,11 @@ window.render = function(){
       <td>${badgeHtml(s)}</td>
       <td>${r.note||''}</td>
       <td>
-        ${actionBtn}
-        <button onclick="editEntry('${r.id}')">Sửa</button>
-        <button onclick="deleteEntry('${r.id}')">Xoá</button>
-      </td>
+  <div class="row-actions">
+    <button class="btn-edit" onclick="editEntry('${r.id}')">✏️ Sửa</button>
+    <button class="btn-del" onclick="deleteEntry('${r.id}')">🗑️ Xóa</button>
+  </div>
+</td>
     </tr>`;
   });
 
@@ -407,16 +408,7 @@ window.deleteEntry = async function(id){
   }
 };
 
-window.checkout = async function(id){
-  await updateDoc(doc(db,"games",id),{active:false});
-};
 
-window.checkin = async function(id){
-  await updateDoc(doc(db,"games",id),{
-    active:true,
-    checkin:nowStr()
-  });
-};
 
 window.editEntry = function(id){
   var r=data.find(x=>x.id===id);
