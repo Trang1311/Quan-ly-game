@@ -344,7 +344,7 @@ onSnapshot(colRef, snapshot => {
 });
 
 /* ===== RENDER ===== */
-window.render = function(){
+.render = function(){
   var q=(document.getElementById('search').value||'').toLowerCase();
   var ff=document.getElementById('filter-forum').value;
   var fs=document.getElementById('filter-status').value;
@@ -397,7 +397,7 @@ window.render = function(){
 
 /* ===== CRUD ===== */
 
-window.saveEntry = async function(){
+.saveEntry = async function(){
   let game=document.getElementById('f-game').value.trim();
   let forum=document.getElementById('f-forum').value;
   let expired=document.getElementById('f-expired').value;
@@ -421,28 +421,30 @@ window.saveEntry = async function(){
   closeModal();
 };
 
-window.deleteEntry = async function(id){
+.deleteEntry = async function(id){
   if(confirm("Xoá?")){
     await deleteDoc(doc(db,"games",id));
   }
 };
-window.checkout = async function(id){ await updateDoc(doc(db,"games",id),{active:false}); }; 
+.checkout = async function(id){ await updateDoc(doc(db,"games",id),{active:false}); }; 
+let lastClick = 0;
+
 window.checkin = async function(id){
-  const ref = doc(db,"games",id);
+  let now = Date.now();
 
-  const item = data.find(x => x.id === id);
+  if(now - lastClick < 2000){
+    alert("Đừng spam 😅");
+    return;
+  }
 
-  // Lấy ngày hiện tại của expired
-  let parts = item.expired.split("-");
-  let date = new Date(parts[0], parts[1]-1, parts[2]);
+  lastClick = now;
 
-  // +30 ngày
-  date.setDate(date.getDate() + 30);
+  let today = new Date();
+  today.setDate(today.getDate() + 30);
 
-  // format lại yyyy-mm-dd
-  let newExpired = date.toISOString().split("T")[0];
+  let newExpired = today.toISOString().split("T")[0];
 
-  await updateDoc(ref,{
+  await updateDoc(doc(db,"games",id),{
     active:true,
     checkin: nowStr(),
     expired: newExpired
