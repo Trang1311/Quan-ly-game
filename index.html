@@ -430,21 +430,18 @@ onSnapshot(colRef, snapshot => {
 let lastClick = 0;
 
 window.checkin = async function(id){
-  let now = Date.now();
+  const ref = doc(db,"games",id);
 
-  if(now - lastClick < 2000){
-    alert("Đừng spam 😅");
-    return;
-  }
-
-  lastClick = now;
-
+  // Lấy ngày hôm nay
   let today = new Date();
+
+  // +30 ngày từ hôm nay (KHÔNG dùng expired cũ nữa)
   today.setDate(today.getDate() + 30);
 
+  // format yyyy-mm-dd
   let newExpired = today.toISOString().split("T")[0];
 
-  await updateDoc(doc(db,"games",id),{
+  await updateDoc(ref,{
     active:true,
     checkin: nowStr(),
     expired: newExpired
