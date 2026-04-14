@@ -40,15 +40,36 @@ tbody tr:hover{background:#fafaf6}
 .badge-expired{background:#f8d7da;color:#721C24}
 .action-col{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
 .btn-checkout{
-  padding:5px 14px;border:1.5px solid #ccc;border-radius:7px;background:#fff;
-  font-size:12px;cursor:pointer;font-weight:600;color:#333;width:100px
+  padding:6px 14px;
+  border:none;
+  border-radius:20px;
+  background:#eee;
+  font-size:12px;
+  cursor:pointer;
+  font-weight:600;
+  color:#555;
+  width:110px;
+  transition:0.2s;
 }
-.btn-checkout:hover{background:#f0f0ea}
+.btn-checkout:hover{
+  background:#ddd;
+}
 .btn-checkin{
-  padding:5px 14px;border:1.5px solid #52B788;border-radius:7px;background:#d8f3dc;
-  font-size:12px;cursor:pointer;font-weight:600;color:#1B4332;width:100px
+  padding:6px 14px;
+  border:none;
+  border-radius:20px;
+  background:linear-gradient(135deg,#52B788,#2D6A4F);
+  font-size:12px;
+  cursor:pointer;
+  font-weight:600;
+  color:#fff;
+  width:110px;
+  transition:0.2s;
 }
-.btn-checkin:hover{background:#b7e4c7}
+.btn-checkin:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
 .row-actions{display:flex;gap:6px;margin-top:3px}
 .btn-edit{
   padding:5px 14px;
@@ -354,9 +375,9 @@ window.render = function(){
     var d=getDaysLeft(r.expired);
     var dayStr=d<0?'Đã hết':d+'d';
 
-    var actionBtn=r.active
-  ?`<button onclick="checkout('${r.id}')">Check-out</button>`
-  :`<button onclick="checkin('${r.id}')">Check-in</button>`;
+    var actionBtn = r.active
+  ? `<button class="btn-checkout" onclick="checkout('${r.id}')">⛔ Check-out</button>`
+  : `<button class="btn-checkin" onclick="checkin('${r.id}')">✅ Check-in</button>`;
     html+=`
     <tr>
       <td>${i+1}</td>
@@ -406,8 +427,27 @@ window.deleteEntry = async function(id){
   }
 };
 window.checkout = async function(id){ await updateDoc(doc(db,"games",id),{active:false}); }; 
-window.checkin = async function(id){ await updateDoc(doc(db,"games",id),{ active:true, checkin:nowStr() }); };
+window.checkin = async function(id){
+  const ref = doc(db,"games",id);
 
+  const item = data.find(x => x.id === id);
+
+  // Lấy ngày hiện tại của expired
+  let parts = item.expired.split("-");
+  let date = new Date(parts[0], parts[1]-1, parts[2]);
+
+  // +30 ngày
+  date.setDate(date.getDate() + 30);
+
+  // format lại yyyy-mm-dd
+  let newExpired = date.toISOString().split("T")[0];
+
+  await updateDoc(ref,{
+    active:true,
+    checkin: nowStr(),
+    expired: newExpired
+  });
+};
 
 window.editEntry = function(id){
   var r=data.find(x=>x.id===id);
