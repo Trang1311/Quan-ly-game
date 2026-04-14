@@ -432,14 +432,17 @@ let lastClick = 0;
 window.checkin = async function(id){
   const ref = doc(db,"games",id);
 
-  // Lấy ngày hôm nay
-  let today = new Date();
+  const item = data.find(x => x.id === id);
 
-  // +30 ngày từ hôm nay (KHÔNG dùng expired cũ nữa)
-  today.setDate(today.getDate() + 30);
+  // Lấy ngày hiện tại của expired
+  let parts = item.expired.split("-");
+  let date = new Date(parts[0], parts[1]-1, parts[2]);
 
-  // format yyyy-mm-dd
-  let newExpired = today.toISOString().split("T")[0];
+  // +30 ngày
+  date.setDate(date.getDate() + 30);
+
+  // format lại yyyy-mm-dd
+  let newExpired = date.toISOString().split("T")[0];
 
   await updateDoc(ref,{
     active:true,
