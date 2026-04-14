@@ -144,7 +144,6 @@ tbody tr:hover{background:#fafaf6}
     <option value="Urgent">Urgent</option>
     <option value="Expired">Expired</option>
   </select>
-  <button class="btn-add" onclick="openAdd()">+ Thêm mới</button>
   <button onclick="importData()">Import Data</button>
 </div>
 
@@ -355,6 +354,10 @@ window.render = function(){
     var s=getStatus(r);
     var d=getDaysLeft(r.expired);
     var dayStr=d<0?'Đã hết':d+'d';
+
+    var actionBtn=r.active
+  ?`<button onclick="checkout('${r.id}')">Check-out</button>`
+  :`<button onclick="checkin('${r.id}')">Check-in</button>`;
     html+=`
     <tr>
       <td>${i+1}</td>
@@ -365,12 +368,7 @@ window.render = function(){
       <td>${dayStr}</td>
       <td>${badgeHtml(s)}</td>
       <td>${r.note||''}</td>
-      <td>
-  <div class="row-actions">
-    <button class="btn-edit" onclick="editEntry('${r.id}')">✏️ Sửa</button>
-    <button class="btn-del" onclick="deleteEntry('${r.id}')">🗑️ Xóa</button>
-  </div>
-</td>
+      <td> ${actionBtn} <button onclick="editEntry('${r.id}')">Sửa</button> <button onclick="deleteEntry('${r.id}')">Xoá</button> </td>
     </tr>`;
   });
 
@@ -408,7 +406,8 @@ window.deleteEntry = async function(id){
     await deleteDoc(doc(db,"games",id));
   }
 };
-
+window.checkout = async function(id){ await updateDoc(doc(db,"games",id),{active:false}); }; 
+window.checkin = async function(id){ await updateDoc(doc(db,"games",id),{ active:true, checkin:nowStr() }); };
 
 
 window.editEntry = function(id){
