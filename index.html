@@ -438,9 +438,18 @@ window.checkin = async function(id){
   }
 
   lastClick = now;
+  let row = data.find(x => x.id === id);
+  if(!row){
+    alert("Không tìm thấy dữ liệu!");
+    return;
+  }
+  let daysToAdd = 21; // mặc định
+  if(row.forum === "PA") daysToAdd = 28;
+  if(row.forum === "Eldorado") daysToAdd = 21;
 
   let today = new Date();
-  today.setDate(today.getDate() +21);
+  today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  today.setDate(today.getDate() + daysToAdd);
 
   let newExpired = today.toISOString().split("T")[0];
 
