@@ -157,6 +157,8 @@ tbody tr:hover{background:#fafaf6}
     <option value="">Tất cả Forum</option>
     <option value="PA">PA</option>
     <option value="Eldorado">Eldorado</option>
+    <option value="IGV">IGV</option>
+    <option value="Z2U">Z2U</option>
   </select>
   <select id="filter-status" onchange="render()">
     <option value="">Tất cả trạng thái</option>
@@ -165,7 +167,7 @@ tbody tr:hover{background:#fafaf6}
     <option value="Urgent">Urgent</option>
     <option value="Expired">Expired</option>
   </select>
-   <button class="btn-add" onclick="openAdd()">+ Thêm mới</button>
+  <button class="btn-add" onclick="openAdd()">+ Thêm Mới</button>
 </div>
 
 <div class="table-wrap">
@@ -196,6 +198,8 @@ tbody tr:hover{background:#fafaf6}
     <select id="f-forum">
       <option value="PA">PA</option>
       <option value="Eldorado">Eldorado</option>
+      <option value="IGV">IGV</option>
+      <option value="Z2U">Z2U</option>
       <option value="Khác">Khác</option>
     </select>
   </div>
@@ -447,6 +451,8 @@ window.checkin = async function(id){
   let daysToAdd = 21; // mặc định
   if(row.forum === "PA") daysToAdd = 28;
   if(row.forum === "Eldorado") daysToAdd = 21;
+  if(row.forum === "IGV") daysToAdd = 21;
+  if(row.forum === "Z2U") daysToAdd = 21;
 
   let today = new Date();
   today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -465,6 +471,7 @@ window.editEntry = function(id){
   var r=data.find(x=>x.id===id);
   editId=id;
 
+  document.getElementById('modal-title').textContent='Sửa tài khoản game';
   document.getElementById('f-game').value=r.game;
   document.getElementById('f-forum').value=r.forum;
   document.getElementById('f-expired').value=r.expired;
@@ -475,7 +482,11 @@ window.editEntry = function(id){
 
 window.openAdd = function(){
   editId=null;
+  document.getElementById('modal-title').textContent='Thêm tài khoản game';
   document.getElementById('f-game').value='';
+  document.getElementById('f-forum').value='PA';
+  document.getElementById('f-expired').value='';
+  document.getElementById('f-note').value='';
   document.getElementById('modal').classList.add('show');
 };
 
