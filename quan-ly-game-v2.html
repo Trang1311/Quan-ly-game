@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản Lý Tài Khoản Game</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
+
+/* ===== TABS ===== */
+.tab-nav{display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e0e0d8}
+.tab-btn{
+  padding:10px 24px;border:none;background:transparent;font-size:14px;
+  font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;
+  margin-bottom:-2px;transition:0.2s
+}
+.tab-btn.active{color:#2D6A4F;border-bottom-color:#2D6A4F}
+.tab-btn:hover:not(.active){color:#555}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+h1{font-size:18px;font-weight:600;margin-bottom:16px;color:#2d2d2d}
+
+/* ===== STATS ===== */
+.top-stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.stat-box{background:#fff;border:1px solid #e0e0d8;border-radius:8px;padding:10px 18px;display:flex;align-items:center;gap:10px;font-size:13px}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot-active{background:#3B6D11}.dot-soon{background:#b8860b}.dot-urgent{background:#c0522a}.dot-expired{background:#A32D2D}
+.stat-num{font-size:20px;font-weight:700}
+
+/* ===== CONTROLS ===== */
+.controls{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.controls input,.controls select{
+  padding:9px 14px;border:1px solid #d8d8cc;border-radius:8px;
+  font-size:14px;background:#fff;color:#333;outline:none;min-width:180px
+}
+.controls input:focus,.controls select:focus{border-color:#aaa}
+.btn-add{
+  padding:9px 18px;background:#2D6A4F;color:#fff;border:none;
+  border-radius:8px;font-size:14px;cursor:pointer;font-weight:600;margin-left:auto
+}
+.btn-add:hover{background:#1B4332}
+
+/* ===== TABLE ===== */
+.table-wrap{background:#fff;border:1px solid #e0e0d8;border-radius:10px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{
+  background:#f0efe8;padding:10px 12px;text-align:left;font-weight:600;
+  color:#555;border-bottom:1px solid #e0e0d8;white-space:nowrap
+}
+tbody td{padding:10px 12px;border-bottom:1px solid #f0efe8;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafaf6}
+
+/* ===== BADGES ===== */
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-active{background:#d8f3dc;color:#1B4332}
+.badge-soon{background:#fff3cd;color:#856404}
+.badge-urgent{background:#fde5d4;color:#7B3F00}
+.badge-expired{background:#f8d7da;color:#721C24}
+.badge-p1{background:#d8f3dc;color:#1B4332}
+.badge-out{background:#f8d7da;color:#721C24}
+
+/* ===== BUTTONS ===== */
+.btn-checkout{
+  padding:6px 14px;border:none;border-radius:20px;background:#eee;
+  font-size:12px;cursor:pointer;font-weight:600;color:#555;width:110px;transition:0.2s;
+}
+.btn-checkout:hover{background:#ddd}
+.btn-checkin{
+  padding:6px 14px;border:none;border-radius:20px;
+  background:linear-gradient(135deg,#52B788,#2D6A4F);
+  font-size:12px;cursor:pointer;font-weight:600;color:#fff;width:110px;transition:0.2s;
+}
+.btn-checkin:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,0.15)}
+.btn-edit{
+  padding:5px 10px;border:none;border-radius:6px;background:#e9f5ff;
+  color:#1d4ed8;font-size:12px;cursor:pointer;font-weight:600;transition:0.2s;
+}
+.btn-edit:hover{background:#dbeafe}
+.btn-del{
+  padding:5px 10px;border:none;border-radius:6px;background:#ffeaea;
+  color:#dc2626;font-size:12px;cursor:pointer;font-weight:600;transition:0.2s;
+}
+.btn-del:hover{background:#fecaca}
+
+.empty{text-align:center;padding:30px;color:#999;font-size:14px}
+
+/* ===== MODAL ===== */
+.modal-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);
+  align-items:center;justify-content:center;z-index:999
+}
+.modal-bg.show{display:flex}
+.modal{
+  background:#fff;border-radius:12px;padding:24px;width:380px;
+  max-width:95vw;box-shadow:0 8px 30px rgba(0,0,0,0.15)
+}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:18px;color:#2d2d2d}
+.form-row{margin-bottom:13px}
+.form-row label{display:block;font-size:12px;color:#666;margin-bottom:5px;font-weight:600}
+.form-row input,.form-row select{
+  width:100%;padding:8px 11px;border:1px solid #ddd;border-radius:7px;
+  font-size:13px;color:#333;outline:none
+}
+.form-row input:focus,.form-row select:focus{border-color:#2D6A4F}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.btn-save{
+  padding:8px 20px;background:#2D6A4F;color:#fff;border:none;
+  border-radius:7px;font-size:13px;cursor:pointer;font-weight:600
+}
+.btn-save:hover{background:#1B4332}
+.btn-cancel{
+  padding:8px 16px;border:1px solid #ccc;border-radius:7px;
+  background:#fff;color:#555;font-size:13px;cursor:pointer
+}
+.btn-cancel:hover{background:#f5f5f0}
+
+.note-warn{
+  background:#fff3cd;border:1px solid #ffc107;border-radius:6px;
+  padding:6px 12px;font-size:12px;color:#856404;margin-bottom:14px;text-align:center
+}
+
+/* ===== POST TRACKER ===== */
+.post-stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.pstat{background:#fff;border:1px solid #e0e0d8;border-radius:8px;padding:10px 18px;display:flex;align-items:center;gap:10px;font-size:13px}
+.dot-p1{background:#3B6D11}.dot-pout{background:#A32D2D}
+
+/* page number input in table */
+.page-input{
+  width:60px;padding:4px 8px;border:1px solid #ddd;border-radius:6px;
+  font-size:13px;text-align:center;outline:none;
+}
+.page-input:focus{border-color:#2D6A4F}
+
+/* page badge color */
+.page-badge{
+  display:inline-block;padding:3px 10px;border-radius:20px;
+  font-size:12px;font-weight:700;min-width:32px;text-align:center
+}
+.page-ok{background:#d8f3dc;color:#1B4332}
+.page-warn{background:#fff3cd;color:#856404}
+.page-out{background:#f8d7da;color:#721C24}
+
+@media(max-width:600px){
+  thead th:nth-child(1),tbody td:nth-child(1){display:none}
+  .controls input,.controls select{min-width:120px}
+}
+</style>
+</head>
+<body>
+
+<!-- TABS -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('accounts')">🎮 Tài Khoản Game</button>
+  <button class="tab-btn" onclick="switchTab('posts')">📋 Theo Dõi Bài Đăng</button>
+</div>
+
+<!-- ===== TAB 1: ACCOUNTS ===== -->
+<div class="tab-content active" id="tab-accounts">
+  <h1>Quản Lý Tài Khoản Game</h1>
+  <div class="note-warn">Lưu Ý: PA không đăng Email ảo — Xa Thải Ngay lập tức nếu vi phạm</div>
+
+  <div class="top-stats">
+    <div class="stat-box"><div class="dot dot-active"></div>Active<span class="stat-num" id="cnt-active">0</span></div>
+    <div class="stat-box"><div class="dot dot-soon"></div>Soon<span class="stat-num" id="cnt-soon">0</span></div>
+    <div class="stat-box"><div class="dot dot-urgent"></div>Urgent<span class="stat-num" id="cnt-urgent">0</span></div>
+    <div class="stat-box"><div class="dot dot-expired"></div>Expired<span class="stat-num" id="cnt-expired">0</span></div>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Tìm game..." oninput="renderAccounts()">
+    <select id="filter-forum" onchange="renderAccounts()">
+      <option value="">Tất cả Forum</option>
+      <option value="PA">PA</option>
+      <option value="Eldorado">Eldorado</option>
+      <option value="IGV">IGV</option>
+      <option value="Z2U">Z2U</option>
+    </select>
+    <select id="filter-status" onchange="renderAccounts()">
+      <option value="">Tất cả trạng thái</option>
+      <option value="Active">Active</option>
+      <option value="Soon">Soon</option>
+      <option value="Urgent">Urgent</option>
+      <option value="Expired">Expired</option>
+    </select>
+    <button class="btn-add" onclick="openAddAccount()">+ Thêm Mới</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Game Name</th><th>Forum</th><th>Check-in</th>
+          <th>Expired Date</th><th>Còn Lại</th><th>Status</th><th>Note</th><th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TAB 2: POST TRACKER ===== -->
+<div class="tab-content" id="tab-posts">
+  <h1>Theo Dõi Bài Đăng Forum</h1>
+
+  <div class="post-stats">
+    <div class="pstat"><div class="dot dot-p1"></div>Trang 1–4 (OK)<span class="stat-num" id="pcnt-ok">0</span></div>
+    <div class="pstat"><div class="dot dot-pout"></div>Trang ≥5 (Checkout)<span class="stat-num" id="pcnt-out">0</span></div>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="post-search" placeholder="Tìm game..." oninput="renderPosts()">
+    <select id="post-filter-forum" onchange="renderPosts()">
+      <option value="">Tất cả Forum</option>
+      <option value="Zeusx">Zeusx</option>
+      <option value="PA">PA</option>
+      <option value="Eldorado">Eldorado</option>
+      <option value="IGV">IGV</option>
+      <option value="Z2U">Z2U</option>
+    </select>
+    <select id="post-filter-status" onchange="renderPosts()">
+      <option value="">Tất cả trạng thái</option>
+      <option value="ok">✅ Trang 1–4</option>
+      <option value="out">⛔ Checkout (≥5)</option>
+    </select>
+    <button class="btn-add" onclick="openAddPost()">+ Thêm Bài</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Game Name</th><th>Forum</th><th>Số Trang</th>
+          <th>Trạng Thái</th><th>Check-in lần cuối</th><th>Note</th><th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="post-tbl-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Accounts -->
+<div class="modal-bg" id="modal-account">
+  <div class="modal">
+    <h3 id="modal-acc-title">Thêm tài khoản game</h3>
+    <div class="form-row"><label>Game Name</label><input id="fa-game" type="text" placeholder="Nhập tên game..."></div>
+    <div class="form-row"><label>Forum</label>
+      <select id="fa-forum">
+        <option value="PA">PA</option><option value="Eldorado">Eldorado</option>
+        <option value="IGV">IGV</option><option value="Z2U">Z2U</option><option value="Khác">Khác</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Ngày hết hạn</label><input id="fa-expired" type="date"></div>
+    <div class="form-row"><label>Ghi chú</label><input id="fa-note" type="text" placeholder="Tuỳ chọn..."></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-account')">Huỷ</button>
+      <button class="btn-save" onclick="saveAccount()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Posts -->
+<div class="modal-bg" id="modal-post">
+  <div class="modal">
+    <h3 id="modal-post-title">Thêm bài đăng</h3>
+    <div class="form-row"><label>Game Name</label><input id="fp-game" type="text" placeholder="Nhập tên game..."></div>
+    <div class="form-row"><label>Forum</label>
+      <select id="fp-forum">
+        <option value="Zeusx">Zeusx</option>
+        <option value="PA">PA</option><option value="Eldorado">Eldorado</option>
+        <option value="IGV">IGV</option><option value="Z2U">Z2U</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Số trang hiện tại</label>
+      <input id="fp-page" type="number" min="1" value="1" placeholder="VD: 1">
+    </div>
+    <div class="form-row"><label>Ghi chú</label><input id="fp-note" type="text" placeholder="Tuỳ chọn..."></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-post')">Huỷ</button>
+      <button class="btn-save" onclick="savePost()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB--8tf1AZWyuR0XbC-vGkbBQ1HwbqBcTA",
+  authDomain: "mrbull-e2e64.firebaseapp.com",
+  projectId: "mrbull-e2e64",
+  storageBucket: "mrbull-e2e64.firebasestorage.app",
+  messagingSenderId: "113835433005",
+  appId: "1:113835433005:web:78d661334c776b73b1eca4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let accountData = [];
+let postData = [];
+let editAccId = null;
+let editPostId = null;
+
+const accRef = collection(db, "games");
+const postRef = collection(db, "posts");
+
+/* ===== TAB SWITCH ===== */
+window.switchTab = function(tab){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.toggle('active', (i===0&&tab==='accounts')||(i===1&&tab==='posts'));
+  });
+  document.getElementById('tab-accounts').classList.toggle('active', tab==='accounts');
+  document.getElementById('tab-posts').classList.toggle('active', tab==='posts');
+};
+
+/* ===== UTILS ===== */
+function getToday(){
+  var n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate());
+}
+function getDaysLeft(exp){
+  var p=exp.split('-');
+  return Math.round((new Date(+p[0],+p[1]-1,+p[2])-getToday())/(864e5));
+}
+function getStatus(row){
+  if(!row.active) return 'Expired';
+  var d=getDaysLeft(row.expired);
+  if(d<0) return 'Expired';
+  if(d<=2) return 'Urgent';
+  if(d<=5) return 'Soon';
+  return 'Active';
+}
+function badgeHtml(s){
+  var m={Active:'badge-active',Soon:'badge-soon',Urgent:'badge-urgent',Expired:'badge-expired'};
+  return `<span class="badge ${m[s]}">${s}</span>`;
+}
+function fmtDate(str){ var p=str.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function nowStr(){
+  var n=new Date();
+  return n.toLocaleDateString('vi-VN')+' '+n.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+function getPostStatus(page){ return page>=5 ? 'out' : 'ok'; }
+function pageBadge(page){
+  var cls = page<=1?'page-ok': page<=4?'page-warn':'page-out';
+  return `<span class="page-badge ${cls}">Trang ${page}</span>`;
+}
+
+/* ===== REALTIME ===== */
+onSnapshot(accRef, snap=>{
+  accountData = snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderAccounts();
+});
+
+onSnapshot(postRef, snap=>{
+  postData = snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderPosts();
+});
+
+/* ===== RENDER ACCOUNTS ===== */
+window.renderAccounts = function(){
+  var q=(document.getElementById('search').value||'').toLowerCase();
+  var ff=document.getElementById('filter-forum').value;
+  var fs=document.getElementById('filter-status').value;
+  var cnt={Active:0,Soon:0,Urgent:0,Expired:0};
+  accountData.forEach(r=>cnt[getStatus(r)]++);
+  document.getElementById('cnt-active').textContent=cnt.Active;
+  document.getElementById('cnt-soon').textContent=cnt.Soon;
+  document.getElementById('cnt-urgent').textContent=cnt.Urgent;
+  document.getElementById('cnt-expired').textContent=cnt.Expired;
+
+  var rows=accountData.filter(r=>{
+    var s=getStatus(r);
+    if(q&&!r.game.toLowerCase().includes(q)) return false;
+    if(ff&&r.forum!==ff) return false;
+    if(fs&&s!==fs) return false;
+    return true;
+  });
+
+  var html='';
+  if(!rows.length) html='<tr><td colspan="9"><div class="empty">Không có dữ liệu</div></td></tr>';
+  rows.forEach((r,i)=>{
+    var s=getStatus(r), d=getDaysLeft(r.expired);
+    var dayStr=d<0?'Đã hết':d+'d';
+    var actionBtn=r.active
+      ?`<button class="btn-checkout" onclick="accCheckout('${r.id}')">⛔ Check-out</button>`
+      :`<button class="btn-checkin" onclick="accCheckin('${r.id}')">✅ Check-in</button>`;
+    html+=`<tr>
+      <td>${i+1}</td><td><b>${r.game}</b></td><td>${r.forum}</td>
+      <td>${r.checkin}</td><td>${fmtDate(r.expired)}</td><td>${dayStr}</td>
+      <td>${badgeHtml(s)}</td><td>${r.note||''}</td>
+      <td style="display:flex;gap:5px;flex-wrap:wrap">
+        ${actionBtn}
+        <button class="btn-edit" onclick="editAccount('${r.id}')">Sửa</button>
+        <button class="btn-del" onclick="deleteAccount('${r.id}')">Xoá</button>
+      </td>
+    </tr>`;
+  });
+  document.getElementById('tbl-body').innerHTML=html;
+};
+
+/* ===== RENDER POSTS ===== */
+window.renderPosts = function(){
+  var q=(document.getElementById('post-search').value||'').toLowerCase();
+  var ff=document.getElementById('post-filter-forum').value;
+  var fs=document.getElementById('post-filter-status').value;
+
+  var cntOk=0, cntOut=0;
+  postData.forEach(r=>{ r.page>=5?cntOut++:cntOk++; });
+  document.getElementById('pcnt-ok').textContent=cntOk;
+  document.getElementById('pcnt-out').textContent=cntOut;
+
+  var rows=postData.filter(r=>{
+    var st=getPostStatus(r.page);
+    if(q&&!r.game.toLowerCase().includes(q)) return false;
+    if(ff&&r.forum!==ff) return false;
+    if(fs&&st!==fs) return false;
+    return true;
+  });
+
+  var html='';
+  if(!rows.length) html='<tr><td colspan="8"><div class="empty">Không có dữ liệu</div></td></tr>';
+
+  rows.forEach((r,i)=>{
+    var st=getPostStatus(r.page);
+    var statusBadge = st==='ok'
+      ? `<span class="badge badge-active">✅ Trang 1–4</span>`
+      : `<span class="badge badge-expired">⛔ Checkout</span>`;
+
+    var actionBtn = st==='out'
+      ? `<button class="btn-checkin" onclick="postCheckin('${r.id}')">✅ Check-in</button>`
+      : `<button class="btn-checkout" onclick="postCheckout('${r.id}')">⛔ Check-out</button>`;
+
+    html+=`<tr>
+      <td>${i+1}</td>
+      <td><b>${r.game}</b></td>
+      <td>${r.forum}</td>
+      <td>
+        <input class="page-input" type="number" min="1" value="${r.page}"
+          onchange="updatePage('${r.id}', this.value)"
+          onblur="updatePage('${r.id}', this.value)">
+      </td>
+      <td>${statusBadge}</td>
+      <td>${r.checkin||'—'}</td>
+      <td>${r.note||''}</td>
+      <td style="display:flex;gap:5px;flex-wrap:wrap">
+        ${actionBtn}
+        <button class="btn-edit" onclick="editPost('${r.id}')">Sửa</button>
+        <button class="btn-del" onclick="deletePost('${r.id}')">Xoá</button>
+      </td>
+    </tr>`;
+  });
+  document.getElementById('post-tbl-body').innerHTML=html;
+};
+
+/* ===== ACCOUNT CRUD ===== */
+window.openAddAccount = function(){
+  editAccId=null;
+  document.getElementById('modal-acc-title').textContent='Thêm tài khoản game';
+  document.getElementById('fa-game').value='';
+  document.getElementById('fa-forum').value='PA';
+  document.getElementById('fa-expired').value='';
+  document.getElementById('fa-note').value='';
+  document.getElementById('modal-account').classList.add('show');
+};
+
+window.editAccount = function(id){
+  var r=accountData.find(x=>x.id===id);
+  editAccId=id;
+  document.getElementById('modal-acc-title').textContent='Sửa tài khoản game';
+  document.getElementById('fa-game').value=r.game;
+  document.getElementById('fa-forum').value=r.forum;
+  document.getElementById('fa-expired').value=r.expired;
+  document.getElementById('fa-note').value=r.note||'';
+  document.getElementById('modal-account').classList.add('show');
+};
+
+window.saveAccount = async function(){
+  var game=document.getElementById('fa-game').value.trim();
+  var forum=document.getElementById('fa-forum').value;
+  var expired=document.getElementById('fa-expired').value;
+  var note=document.getElementById('fa-note').value.trim();
+  if(!game||!expired){alert('Thiếu dữ liệu');return;}
+  if(editAccId){
+    await updateDoc(doc(db,'games',editAccId),{game,forum,expired,note});
+  }else{
+    await addDoc(accRef,{game,forum,expired,note,active:true,checkin:nowStr()});
+  }
+  closeModal('modal-account');
+};
+
+window.deleteAccount = async function(id){
+  if(confirm('Xoá tài khoản này?')) await deleteDoc(doc(db,'games',id));
+};
+
+let lastAccClick=0;
+window.accCheckin = async function(id){
+  if(Date.now()-lastAccClick<2000){alert('Đừng spam 😅');return;}
+  lastAccClick=Date.now();
+  var r=accountData.find(x=>x.id===id);
+  if(!r){alert('Không tìm thấy!');return;}
+  var days={PA:28,Eldorado:21,IGV:21,Z2U:21}[r.forum]||21;
+  var d=new Date(); d.setDate(d.getDate()+days);
+  await updateDoc(doc(db,'games',id),{active:true,checkin:nowStr(),expired:d.toISOString().split('T')[0]});
+};
+window.accCheckout = async function(id){
+  await updateDoc(doc(db,'games',id),{active:false});
+};
+
+/* ===== POST CRUD ===== */
+window.openAddPost = function(){
+  editPostId=null;
+  document.getElementById('modal-post-title').textContent='Thêm bài đăng';
+  document.getElementById('fp-game').value='';
+  document.getElementById('fp-forum').value='Zeusx';
+  document.getElementById('fp-page').value='1';
+  document.getElementById('fp-note').value='';
+  document.getElementById('modal-post').classList.add('show');
+};
+
+window.editPost = function(id){
+  var r=postData.find(x=>x.id===id);
+  editPostId=id;
+  document.getElementById('modal-post-title').textContent='Sửa bài đăng';
+  document.getElementById('fp-game').value=r.game;
+  document.getElementById('fp-forum').value=r.forum;
+  document.getElementById('fp-page').value=r.page;
+  document.getElementById('fp-note').value=r.note||'';
+  document.getElementById('modal-post').classList.add('show');
+};
+
+window.savePost = async function(){
+  var game=document.getElementById('fp-game').value.trim();
+  var forum=document.getElementById('fp-forum').value;
+  var page=parseInt(document.getElementById('fp-page').value)||1;
+  var note=document.getElementById('fp-note').value.trim();
+  if(!game){alert('Nhập tên game!');return;}
+  if(editPostId){
+    await updateDoc(doc(db,'posts',editPostId),{game,forum,page,note});
+  }else{
+    await addDoc(postRef,{game,forum,page,note,checkin:nowStr()});
+  }
+  closeModal('modal-post');
+};
+
+window.deletePost = async function(id){
+  if(confirm('Xoá bài đăng này?')) await deleteDoc(doc(db,'posts',id));
+};
+
+window.updatePage = async function(id, val){
+  var page=parseInt(val)||1;
+  if(page<1) page=1;
+  await updateDoc(doc(db,'posts',id),{page});
+};
+
+let lastPostClick=0;
+window.postCheckin = async function(id){
+  if(Date.now()-lastPostClick<2000){alert('Đừng spam 😅');return;}
+  lastPostClick=Date.now();
+  await updateDoc(doc(db,'posts',id),{page:1, checkin:nowStr()});
+};
+
+window.postCheckout = async function(id){
+  await updateDoc(doc(db,'posts',id),{page:5});
+};
+
+/* ===== MODAL CLOSE ===== */
+window.closeModal = function(id){
+  document.getElementById(id).classList.remove('show');
+};
+</script>
+</body>
+</html>
