@@ -503,7 +503,7 @@ window.accCheckin = async function(id){
   lastAccClick=Date.now();
   var r=accountData.find(x=>x.id===id);
   if(!r){alert('Không tìm thấy!');return;}
-  var days={PA:28,Eldorado:21,IGV:21,Z2U:21}[r.forum]||21;
+  var days={PA:28,Eldorado:21,IGV:21,Z2U:30}[r.forum]||21;
   var d=new Date(); d.setDate(d.getDate()+days);
   await updateDoc(doc(db,'games',id),{active:true,checkin:nowStr(),expired:d.toISOString().split('T')[0]});
 };
