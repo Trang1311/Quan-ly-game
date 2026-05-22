@@ -7,7 +7,38 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
+  
+/* ===== STICKY HEADER ===== */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #f5f5f0;
+  padding: 12px 0 0;
+  margin: -16px -16px 0;
+  padding: 16px 16px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
+/* ===== BLINKING WARNING ===== */
+.note-warn {
+  background: #c00000;
+  border: 2px solid #8b0000;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 14px;
+  text-align: center;
+  animation: blink-warn 1.2s step-start infinite;
+  letter-spacing: 0.3px;
+}
+
+@keyframes blink-warn {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
 /* ===== TABS ===== */
 .tab-nav{display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #e0e0d8}
 .tab-btn{
@@ -159,6 +190,7 @@ tbody tr:hover{background:#fafaf6}
 
 <!-- ===== TAB 1: ACCOUNTS ===== -->
 <div class="tab-content active" id="tab-accounts">
+  <div class="sticky-header">
   <h1>Quản Lý Tài Khoản Game</h1>
   <div class="note-warn">Lưu Ý: PA không đăng Email ảo — Xa Thải Ngay lập tức nếu vi phạm</div>
 
@@ -187,7 +219,7 @@ tbody tr:hover{background:#fafaf6}
     </select>
     <button class="btn-add" onclick="openAddAccount()">+ Thêm Mới</button>
   </div>
-
+</div>
   <div class="table-wrap">
     <table>
       <thead>
