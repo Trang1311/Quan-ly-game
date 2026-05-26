@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tài Khoản Game</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
+
+/* ===== STICKY HEADER ===== */
+.sticky-header{
+  position:sticky;top:0;z-index:100;background:#f5f5f0;
+  margin:-16px -16px 0;padding:16px 16px 0;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08)
+}
+
+/* ===== TOP NAV ===== */
+.top-nav{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.back-btn{
+  padding:7px 14px;background:#fff;border:1px solid #d8d8cc;border-radius:8px;
+  font-size:13px;color:#555;cursor:pointer;text-decoration:none;font-weight:600;
+  transition:0.2s
+}
+.back-btn:hover{background:#eee}
+h1{font-size:18px;font-weight:700;color:#2d2d2d}
+
+/* ===== BLINKING WARNING ===== */
+.note-warn{
+  background:#7a0000;border:3px solid #ff0000;border-radius:8px;
+  padding:14px 20px;font-size:20px;font-weight:900;color:#ff4444;
+  margin-bottom:14px;text-align:center;
+  animation:blink-warn 0.8s step-start infinite;
+  text-shadow:0 0 8px #ff0000;text-transform:uppercase
+}
+@keyframes blink-warn{0%,100%{opacity:1}50%{opacity:0.25}}
+
+/* ===== STATS ===== */
+.top-stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.stat-box{background:#fff;border:1px solid #e0e0d8;border-radius:8px;padding:10px 18px;display:flex;align-items:center;gap:10px;font-size:13px}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot-active{background:#3B6D11}.dot-soon{background:#b8860b}
+.dot-urgent{background:#c0522a}.dot-expired{background:#A32D2D}
+.stat-num{font-size:20px;font-weight:700}
+
+/* ===== CONTROLS ===== */
+.controls{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.controls input,.controls select{
+  padding:9px 14px;border:1px solid #d8d8cc;border-radius:8px;
+  font-size:14px;background:#fff;color:#333;outline:none;min-width:180px
+}
+.controls input:focus,.controls select:focus{border-color:#aaa}
+.btn-add{
+  padding:9px 18px;background:#2D6A4F;color:#fff;border:none;
+  border-radius:8px;font-size:14px;cursor:pointer;font-weight:600;margin-left:auto
+}
+.btn-add:hover{background:#1B4332}
+
+/* ===== TABLE ===== */
+.table-wrap{background:#fff;border:1px solid #e0e0d8;border-radius:10px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{
+  background:#f0efe8;padding:10px 12px;text-align:left;font-weight:600;
+  color:#555;border-bottom:1px solid #e0e0d8;white-space:nowrap
+}
+tbody td{padding:10px 12px;border-bottom:1px solid #f0efe8;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafaf6}
+
+/* ===== BADGES ===== */
+.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-active{background:#d8f3dc;color:#1B4332}
+.badge-soon{background:#fff3cd;color:#856404}
+.badge-urgent{background:#fde5d4;color:#7B3F00}
+.badge-expired{background:#f8d7da;color:#721C24}
+
+/* ===== BUTTONS ===== */
+.btn-checkout{
+  padding:6px 14px;border:none;border-radius:20px;background:#eee;
+  font-size:12px;cursor:pointer;font-weight:600;color:#555;width:110px;transition:0.2s
+}
+.btn-checkout:hover{background:#ddd}
+.btn-checkin{
+  padding:6px 14px;border:none;border-radius:20px;
+  background:linear-gradient(135deg,#52B788,#2D6A4F);
+  font-size:12px;cursor:pointer;font-weight:600;color:#fff;width:110px;transition:0.2s
+}
+.btn-checkin:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,0.15)}
+.btn-edit{
+  padding:5px 10px;border:none;border-radius:6px;background:#e9f5ff;
+  color:#1d4ed8;font-size:12px;cursor:pointer;font-weight:600;transition:0.2s
+}
+.btn-edit:hover{background:#dbeafe}
+.btn-del{
+  padding:5px 10px;border:none;border-radius:6px;background:#ffeaea;
+  color:#dc2626;font-size:12px;cursor:pointer;font-weight:600;transition:0.2s
+}
+.btn-del:hover{background:#fecaca}
+.empty{text-align:center;padding:30px;color:#999;font-size:14px}
+
+/* ===== MODAL ===== */
+.modal-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);
+  align-items:center;justify-content:center;z-index:999
+}
+.modal-bg.show{display:flex}
+.modal{
+  background:#fff;border-radius:12px;padding:24px;width:380px;
+  max-width:95vw;box-shadow:0 8px 30px rgba(0,0,0,0.15)
+}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:18px;color:#2d2d2d}
+.form-row{margin-bottom:13px}
+.form-row label{display:block;font-size:12px;color:#666;margin-bottom:5px;font-weight:600}
+.form-row input,.form-row select{
+  width:100%;padding:8px 11px;border:1px solid #ddd;border-radius:7px;
+  font-size:13px;color:#333;outline:none
+}
+.form-row input:focus,.form-row select:focus{border-color:#2D6A4F}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.btn-save{
+  padding:8px 20px;background:#2D6A4F;color:#fff;border:none;
+  border-radius:7px;font-size:13px;cursor:pointer;font-weight:600
+}
+.btn-save:hover{background:#1B4332}
+.btn-cancel{
+  padding:8px 16px;border:1px solid #ccc;border-radius:7px;
+  background:#fff;color:#555;font-size:13px;cursor:pointer
+}
+.btn-cancel:hover{background:#f5f5f0}
+
+@media(max-width:600px){
+  thead th:nth-child(1),tbody td:nth-child(1){display:none}
+  .controls input,.controls select{min-width:120px}
+}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div class="top-nav">
+    <a class="back-btn" href="index.html">← Trang chủ</a>
+    <h1>🎮 Tài Khoản Game</h1>
+  </div>
+  <div class="note-warn">🚨 PA không đăng Email ảo — Đăng đúng Form — Vi phạm Sa Thải ngay 🚨</div>
+
+  <div class="top-stats">
+    <div class="stat-box"><div class="dot dot-active"></div>Active<span class="stat-num" id="cnt-active">0</span></div>
+    <div class="stat-box"><div class="dot dot-soon"></div>Soon<span class="stat-num" id="cnt-soon">0</span></div>
+    <div class="stat-box"><div class="dot dot-urgent"></div>Urgent<span class="stat-num" id="cnt-urgent">0</span></div>
+    <div class="stat-box"><div class="dot dot-expired"></div>Expired<span class="stat-num" id="cnt-expired">0</span></div>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Tìm game..." oninput="renderAccounts()">
+    <select id="filter-forum" onchange="renderAccounts()">
+      <option value="">Tất cả Forum</option>
+      <option value="PA">PA</option>
+      <option value="Eldorado">Eldorado</option>
+      <option value="IGV">IGV</option>
+      <option value="Z2U">Z2U</option>
+    </select>
+    <select id="filter-status" onchange="renderAccounts()">
+      <option value="">Tất cả trạng thái</option>
+      <option value="Active">Active</option>
+      <option value="Soon">Soon</option>
+      <option value="Urgent">Urgent</option>
+      <option value="Expired">Expired</option>
+    </select>
+    <button class="btn-add" onclick="openAddAccount()">+ Thêm Mới</button>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th><th>Game Name</th><th>Forum</th><th>Check-in</th>
+        <th>Expired Date</th><th>Còn Lại</th><th>Status</th><th>Note</th><th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody id="tbl-body"></tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="modal-account">
+  <div class="modal">
+    <h3 id="modal-acc-title">Thêm tài khoản game</h3>
+    <div class="form-row"><label>Game Name</label><input id="fa-game" type="text" placeholder="Nhập tên game..."></div>
+    <div class="form-row"><label>Forum</label>
+      <select id="fa-forum">
+        <option value="PA">PA</option><option value="Eldorado">Eldorado</option>
+        <option value="IGV">IGV</option><option value="Z2U">Z2U</option><option value="Khác">Khác</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Ngày hết hạn</label><input id="fa-expired" type="date"></div>
+    <div class="form-row"><label>Ghi chú</label><input id="fa-note" type="text" placeholder="Tuỳ chọn..."></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-account')">Huỷ</button>
+      <button class="btn-save" onclick="saveAccount()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { db, accRef, getStatus, getDaysLeft, fmtDate, nowStr,
+         addDoc, doc, updateDoc, deleteDoc, onSnapshot
+} from './firebase.js';
+
+let accountData = [];
+let editAccId = null;
+
+onSnapshot(accRef, snap => {
+  accountData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderAccounts();
+});
+
+function badgeHtml(s) {
+  const m = { Active:'badge-active', Soon:'badge-soon', Urgent:'badge-urgent', Expired:'badge-expired' };
+  return `<span class="badge ${m[s]}">${s}</span>`;
+}
+
+window.renderAccounts = function () {
+  const q  = (document.getElementById('search').value || '').toLowerCase();
+  const ff = document.getElementById('filter-forum').value;
+  const fs = document.getElementById('filter-status').value;
+
+  const cnt = { Active:0, Soon:0, Urgent:0, Expired:0 };
+  accountData.forEach(r => cnt[getStatus(r)]++);
+  document.getElementById('cnt-active').textContent  = cnt.Active;
+  document.getElementById('cnt-soon').textContent    = cnt.Soon;
+  document.getElementById('cnt-urgent').textContent  = cnt.Urgent;
+  document.getElementById('cnt-expired').textContent = cnt.Expired;
+
+  const rows = accountData.filter(r => {
+    const s = getStatus(r);
+    if (q  && !r.game.toLowerCase().includes(q)) return false;
+    if (ff && r.forum !== ff) return false;
+    if (fs && s !== fs) return false;
+    return true;
+  });
+
+  let html = '';
+  if (!rows.length) html = '<tr><td colspan="9"><div class="empty">Không có dữ liệu</div></td></tr>';
+  rows.forEach((r, i) => {
+    const s = getStatus(r);
+    const d = getDaysLeft(r.expired);
+    const dayStr = d < 0 ? 'Đã hết' : d + 'd';
+    const actionBtn = r.active
+      ? `<button class="btn-checkout" onclick="accCheckout('${r.id}')">⛔ Check-out</button>`
+      : `<button class="btn-checkin"  onclick="accCheckin('${r.id}')">✅ Check-in</button>`;
+    html += `<tr>
+      <td>${i+1}</td><td><b>${r.game}</b></td><td>${r.forum}</td>
+      <td>${r.checkin}</td><td>${fmtDate(r.expired)}</td><td>${dayStr}</td>
+      <td>${badgeHtml(s)}</td><td>${r.note||''}</td>
+      <td style="display:flex;gap:5px;flex-wrap:wrap">
+        ${actionBtn}
+        <button class="btn-edit" onclick="editAccount('${r.id}')">Sửa</button>
+        <button class="btn-del"  onclick="deleteAccount('${r.id}')">Xoá</button>
+      </td>
+    </tr>`;
+  });
+  document.getElementById('tbl-body').innerHTML = html;
+};
+
+window.openAddAccount = function () {
+  editAccId = null;
+  document.getElementById('modal-acc-title').textContent = 'Thêm tài khoản game';
+  document.getElementById('fa-game').value    = '';
+  document.getElementById('fa-forum').value   = 'PA';
+  document.getElementById('fa-expired').value = '';
+  document.getElementById('fa-note').value    = '';
+  document.getElementById('modal-account').classList.add('show');
+};
+
+window.editAccount = function (id) {
+  const r = accountData.find(x => x.id === id);
+  editAccId = id;
+  document.getElementById('modal-acc-title').textContent = 'Sửa tài khoản game';
+  document.getElementById('fa-game').value    = r.game;
+  document.getElementById('fa-forum').value   = r.forum;
+  document.getElementById('fa-expired').value = r.expired;
+  document.getElementById('fa-note').value    = r.note || '';
+  document.getElementById('modal-account').classList.add('show');
+};
+
+window.saveAccount = async function () {
+  const game    = document.getElementById('fa-game').value.trim();
+  const forum   = document.getElementById('fa-forum').value;
+  const expired = document.getElementById('fa-expired').value;
+  const note    = document.getElementById('fa-note').value.trim();
+  if (!game || !expired) { alert('Thiếu dữ liệu'); return; }
+  if (editAccId) {
+    await updateDoc(doc(db, 'games', editAccId), { game, forum, expired, note });
+  } else {
+    await addDoc(accRef, { game, forum, expired, note, active:true, checkin:nowStr() });
+  }
+  closeModal('modal-account');
+};
+
+window.deleteAccount = async function (id) {
+  if (confirm('Xoá tài khoản này?')) await deleteDoc(doc(db, 'games', id));
+};
+
+let lastAccClick = 0;
+window.accCheckin = async function (id) {
+  if (Date.now() - lastAccClick < 2000) { alert('Đừng spam 😅'); return; }
+  lastAccClick = Date.now();
+  const r = accountData.find(x => x.id === id);
+  if (!r) { alert('Không tìm thấy!'); return; }
+  const days = { PA:28, Eldorado:21, IGV:21, Z2U:30 }[r.forum] || 21;
+  const d = new Date(); d.setDate(d.getDate() + days);
+  await updateDoc(doc(db, 'games', id), {
+    active: true, checkin: nowStr(),
+    expired: d.toISOString().split('T')[0]
+  });
+};
+
+window.accCheckout = async function (id) {
+  await updateDoc(doc(db, 'games', id), { active: false });
+};
+
+window.closeModal = function (id) {
+  document.getElementById(id).classList.remove('show');
+};
+</script>
+</body>
+</html>
