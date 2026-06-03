@@ -11,7 +11,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 /* ===== STICKY HEADER ===== */
 .sticky-header{
   background:#f5f5f0;
-  padding:12px 0 0;
+  padding:12px 0 10px;
 }
 
 h1{font-size:18px;font-weight:700;color:#2d2d2d}
@@ -27,7 +27,7 @@ h1{font-size:18px;font-weight:700;color:#2d2d2d}
 @keyframes blink-warn{0%,100%{opacity:1}50%{opacity:0.25}}
 
 /* ===== STATS ===== */
-.top-stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.top-stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;background:#F5F5F0}
 .stat-box{background:#fff;border:1px solid #e0e0d8;border-radius:8px;padding:10px 18px;display:flex;align-items:center;gap:10px;font-size:13px}
 .dot{width:11px;height:11px;border-radius:50%}
 .dot-active{background:#3B6D11}.dot-soon{background:#b8860b}
@@ -35,7 +35,7 @@ h1{font-size:18px;font-weight:700;color:#2d2d2d}
 .stat-num{font-size:20px;font-weight:700}
 
 /* ===== CONTROLS ===== */
-.controls{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.controls{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center; background:#F5F5F0}
 .controls input,.controls select{
   padding:9px 14px;border:1px solid #d8d8cc;border-radius:8px;
   font-size:14px;background:#fff;color:#333;outline:none;min-width:180px
@@ -181,8 +181,8 @@ tbody tr:hover{background:#fafaf6}
     <div class="stat-box"><div class="dot dot-urgent"></div>Urgent<span class="stat-num" id="cnt-urgent">0</span></div>
     <div class="stat-box"><div class="dot dot-expired"></div>Expired<span class="stat-num" id="cnt-expired">0</span></div>
   </div>
-</div>
-  <div class="controls">
+
+  <div class="controls" style="background:#F5F5F0" >
     <input type="text" id="search" placeholder="Tìm game..." oninput="renderAccounts()">
     <select id="filter-forum" onchange="renderAccounts()">
       <option value="">Tất cả Forum</option>
@@ -201,7 +201,7 @@ tbody tr:hover{background:#fafaf6}
     <button class="btn-add" onclick="openAddAccount()">+ Thêm Mới</button>
   </div>
 </div>
-
+</div>
 <div class="table-wrap">
   <table>
     <thead>
