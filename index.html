@@ -10,32 +10,29 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;min-height:100vh
 .logo{font-size:36px;margin-bottom:8px;text-align:center}
 h1{font-size:22px;font-weight:700;color:#2d2d2d;margin-bottom:6px;text-align:center}
 p{font-size:14px;color:#888;margin-bottom:36px;text-align:center}
-.nav-grid{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:760px}
+.nav-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;width:100%;max-width:560px}
 .nav-card{
   background:#fff;border:1px solid #e0e0d8;border-radius:14px;
-  padding:30px 36px;text-align:center;text-decoration:none;color:#333;
-  transition:0.2s;min-width:200px;box-shadow:0 2px 8px rgba(0,0,0,0.05)
+  padding:28px 20px;text-align:center;text-decoration:none;color:#333;
+  transition:0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.05)
 }
 .nav-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
-.nav-card .icon{font-size:40px;margin-bottom:12px}
-.nav-card .label{font-size:16px;font-weight:700;color:#2d2d2d;margin-bottom:4px}
-.nav-card .desc{font-size:12px;color:#999}
-.nav-card.green{border-top:4px solid #2D6A4F}
-.nav-card.green:hover{border-color:#2D6A4F}
-.nav-card.blue{border-top:4px solid #1877F2}
-.nav-card.blue:hover{border-color:#1877F2}
-.nav-card.orange{border-top:4px solid #E07B00}
-.nav-card.purple{border-top:4px solid #7C3AED}
-.nav-card.purple:hover{border-color:#7C3AED}
-.nav-card.orange:hover{border-color:#E07B00}
+.nav-card .icon{font-size:36px;margin-bottom:10px}
+.nav-card .label{font-size:15px;font-weight:700;color:#2d2d2d;margin-bottom:4px}
+.nav-card .desc{font-size:12px;color:#999;line-height:1.4}
+.nav-card.green{border-top:4px solid #2D6A4F}.nav-card.green:hover{border-color:#2D6A4F}
+.nav-card.blue{border-top:4px solid #1877F2}.nav-card.blue:hover{border-color:#1877F2}
+.nav-card.orange{border-top:4px solid #E07B00}.nav-card.orange:hover{border-color:#E07B00}
+.nav-card.purple{border-top:4px solid #7C3AED}.nav-card.purple:hover{border-color:#7C3AED}
 .note-warn{
   background:#7a0000;border:3px solid #ff0000;border-radius:8px;
   padding:12px 20px;font-size:15px;font-weight:900;color:#ff4444;
   margin-bottom:32px;text-align:center;
   animation:blink-warn 0.8s step-start infinite;
-  text-shadow:0 0 8px #ff0000;text-transform:uppercase;max-width:600px
+  text-shadow:0 0 8px #ff0000;text-transform:uppercase;max-width:560px;width:100%
 }
 @keyframes blink-warn{0%,100%{opacity:1}50%{opacity:0.25}}
+@media(max-width:480px){.nav-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -57,9 +54,9 @@ p{font-size:14px;color:#888;margin-bottom:36px;text-align:center}
     <a class="nav-card orange" href="guide.html">
       <div class="icon">📖</div>
       <div class="label">Hướng Dẫn Seller</div>
-      <div class="desc">Hướng dẫn login game</div>
+      <div class="desc">Hướng dẫn login game cho từng loại tài khoản</div>
     </a>
-      <a class="nav-card purple" href="handover.html">
+    <a class="nav-card purple" href="handover.html">
       <div class="icon">📅</div>
       <div class="label">Bàn Giao Ca</div>
       <div class="desc">Lịch bàn giao ca sáng / ca tối theo ngày</div>

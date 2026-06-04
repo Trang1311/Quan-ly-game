@@ -12,11 +12,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 
 /* ===== GLOBAL NAV ===== */
 .global-nav-wrap{position:sticky;top:0;z-index:200;margin:-16px -16px 0}
-.global-nav{
-  display:flex;align-items:center;gap:0;background:#fff;
-  height:46px;border-bottom:1px solid #e0e0d8;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:0 12px
-}
+.global-nav{display:flex;align-items:center;gap:0;background:#fff;height:46px;border-bottom:1px solid #e0e0d8;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:0 12px}
 .gnav-logo{font-size:20px;text-decoration:none;padding:0 14px 0 4px;margin-right:8px;border-right:1px solid #e0e0d8;height:100%;display:flex;align-items:center}
 .gnav-item{padding:0 18px;height:100%;display:flex;align-items:center;text-decoration:none;font-size:13px;font-weight:600;color:#999;border-bottom:3px solid transparent;transition:0.15s;white-space:nowrap}
 .gnav-item:hover{color:#333;background:#f8f8f5}
@@ -24,68 +20,60 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 .gnav-item.blue.active{color:#1877F2;border-bottom-color:#1877F2;background:#f0f6ff}
 .gnav-item.orange.active{color:#E07B00;border-bottom-color:#E07B00;background:#fff8f0}
 .gnav-item.purple.active{color:#7C3AED;border-bottom-color:#7C3AED;background:#f5f0ff}
-.global-notebar{
-  background:#7a0000;border-bottom:2px solid #ff0000;padding:7px 16px;
-  text-align:center;font-size:13px;font-weight:800;color:#ff4444;
-  animation:blink-warn 0.8s step-start infinite;text-transform:uppercase;letter-spacing:0.3px
-}
+.global-notebar{background:#7a0000;border-bottom:2px solid #ff0000;padding:7px 16px;text-align:center;font-size:13px;font-weight:800;color:#ff4444;animation:blink-warn 0.8s step-start infinite;text-transform:uppercase;letter-spacing:0.3px}
 
-/* ===== CALENDAR HEADER ===== */
-.cal-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 0 12px;
-}
-.cal-title{font-size:17px;font-weight:700;color:#2d2d2d}
+/* ===== CAL HEADER ===== */
+.cal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 0 10px;gap:10px;flex-wrap:wrap}
 .cal-nav{display:flex;align-items:center;gap:8px}
-.cal-nav button{
-  padding:7px 14px;border:1px solid #d8d8cc;border-radius:8px;
-  background:#fff;font-size:13px;cursor:pointer;font-weight:600;color:#555;transition:0.15s
-}
+.cal-title{font-size:17px;font-weight:700;color:#2d2d2d;min-width:140px;text-align:center}
+.cal-nav button{padding:7px 14px;border:1px solid #d8d8cc;border-radius:8px;background:#fff;font-size:13px;cursor:pointer;font-weight:600;color:#555;transition:0.15s}
 .cal-nav button:hover{background:#f0efe8}
-.btn-add-handover{
-  padding:8px 18px;background:#7C3AED;color:#fff;border:none;
+
+/* ===== SEARCH BAR ===== */
+.search-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.search-bar input[type=date]{
+  padding:7px 12px;border:1px solid #d8d8cc;border-radius:8px;
+  font-size:13px;background:#fff;color:#333;outline:none;cursor:pointer
+}
+.search-bar input[type=date]:focus{border-color:#7C3AED;box-shadow:0 0 0 2px rgba(124,58,237,0.1)}
+.btn-search{
+  padding:7px 16px;background:#7C3AED;color:#fff;border:none;
   border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;transition:0.2s
 }
+.btn-search:hover{background:#6D28D9}
+.btn-clear-search{
+  padding:7px 12px;background:#f0efe8;color:#888;border:1px solid #d8d8cc;
+  border-radius:8px;font-size:12px;cursor:pointer;font-weight:600;transition:0.2s
+}
+.btn-clear-search:hover{background:#e0dfd8;color:#555}
+.search-result-info{font-size:12px;color:#7C3AED;font-weight:600;align-self:center}
+
+.btn-add-handover{padding:8px 18px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;transition:0.2s}
 .btn-add-handover:hover{background:#6D28D9}
 
 /* ===== CALENDAR GRID ===== */
 .cal-grid{background:#fff;border:1px solid #e0e0d8;border-radius:12px;overflow:hidden}
-.cal-days-header{
-  display:grid;grid-template-columns:repeat(7,1fr);
-  background:#f0efe8;border-bottom:1px solid #e0e0d8
-}
-.cal-day-label{
-  padding:8px 0;text-align:center;font-size:12px;
-  font-weight:700;color:#888
-}
+.cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);background:#f0efe8;border-bottom:1px solid #e0e0d8}
+.cal-day-label{padding:8px 0;text-align:center;font-size:12px;font-weight:700;color:#888}
 .cal-day-label.sun{color:#e53e3e}
 .cal-day-label.sat{color:#3182ce}
 .cal-cells{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-cell{
-  min-height:80px;border-right:1px solid #f0efe8;border-bottom:1px solid #f0efe8;
-  padding:6px;cursor:pointer;transition:0.15s;position:relative
-}
+.cal-cell{min-height:80px;border-right:1px solid #f0efe8;border-bottom:1px solid #f0efe8;padding:6px;cursor:pointer;transition:0.15s;position:relative}
 .cal-cell:nth-child(7n){border-right:none}
 .cal-cell:hover{background:#fafaf6}
 .cal-cell.other-month{background:#fafaf8}
 .cal-cell.other-month .cell-num{color:#ccc}
 .cal-cell.today{background:#fffbeb}
-.cal-cell.today .cell-num{
-  background:#7C3AED;color:#fff;border-radius:50%;
-  width:24px;height:24px;display:flex;align-items:center;justify-content:center;
-  font-weight:700
-}
+.cal-cell.today .cell-num{background:#7C3AED;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.cal-cell.search-highlight{background:#f0ebff !important;outline:2px solid #7C3AED;outline-offset:-2px;z-index:1}
+.cal-cell.search-highlight .cell-num{color:#7C3AED;font-weight:800}
 .cell-num{font-size:13px;font-weight:600;color:#555;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .cell-num.sun-num{color:#e53e3e}
 .cell-num.sat-num{color:#3182ce}
 
-/* ===== SHIFT BADGES ON CELL ===== */
+/* ===== SHIFT TAGS ===== */
 .cell-shifts{display:flex;flex-direction:column;gap:3px;margin-top:4px}
-.shift-tag{
-  display:flex;align-items:center;gap:4px;
-  padding:2px 6px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;
-  transition:0.15s
-}
+.shift-tag{display:flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;transition:0.15s}
 .shift-tag.morning{background:#d1fae5;color:#065f46}
 .shift-tag.morning:hover{background:#a7f3d0}
 .shift-tag.evening{background:#dbeafe;color:#1e40af}
@@ -93,39 +81,29 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 .shift-tag .shift-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .shift-tag.morning .shift-dot{background:#10b981}
 .shift-tag.evening .shift-dot{background:#3b82f6}
+.cell-empty-hint{position:absolute;bottom:4px;right:6px;font-size:18px;opacity:0;transition:0.15s;color:#ccc}
+.cal-cell:hover .cell-empty-hint{opacity:1}
 
 /* ===== MODAL ===== */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;z-index:999}
 .modal-bg.show{display:flex}
 .modal{background:#fff;border-radius:14px;width:420px;max-width:95vw;box-shadow:0 12px 40px rgba(0,0,0,0.18);overflow:hidden}
-.modal-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 20px;border-bottom:1px solid #f0efe8
-}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f0efe8}
 .modal-head h3{font-size:15px;font-weight:700;color:#2d2d2d}
 .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:#aaa;line-height:1;padding:2px 6px;border-radius:4px}
 .modal-close:hover{background:#f0efe8;color:#555}
 .modal-body{padding:20px}
 .form-row{margin-bottom:14px}
 .form-row label{display:block;font-size:12px;color:#666;margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px}
-.form-row input,.form-row select,.form-row textarea{
-  width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:8px;
-  font-size:13px;color:#333;outline:none;font-family:Arial,sans-serif
-}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;color:#333;outline:none;font-family:Arial,sans-serif}
 .form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:#7C3AED;box-shadow:0 0 0 2px rgba(124,58,237,0.1)}
 .form-row textarea{resize:vertical;min-height:100px;line-height:1.6}
-
-/* shift selector */
 .shift-select{display:flex;gap:10px}
-.shift-opt{
-  flex:1;padding:10px;border:2px solid #e0e0d8;border-radius:8px;
-  text-align:center;cursor:pointer;transition:0.15s;font-size:13px;font-weight:600;color:#888
-}
+.shift-opt{flex:1;padding:10px;border:2px solid #e0e0d8;border-radius:8px;text-align:center;cursor:pointer;transition:0.15s;font-size:13px;font-weight:600;color:#888}
 .shift-opt:hover{border-color:#ccc;color:#555}
 .shift-opt.selected.morning{border-color:#10b981;background:#d1fae5;color:#065f46}
 .shift-opt.selected.evening{border-color:#3b82f6;background:#dbeafe;color:#1e40af}
 .shift-opt .shift-icon{font-size:22px;margin-bottom:4px}
-
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;padding:0 20px 20px}
 .btn-save{padding:9px 22px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600}
 .btn-save:hover{background:#6D28D9}
@@ -135,40 +113,19 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 .btn-del-entry:hover{background:#fee2e2}
 
 /* ===== NOTE PANEL ===== */
-.note-panel-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 20px 12px
-}
-.note-panel-head h3{font-size:15px;font-weight:700;color:#2d2d2d}
 .note-shift-tabs{display:flex;gap:6px;margin:0 20px 14px}
-.note-tab{
-  padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;
-  cursor:pointer;border:2px solid transparent;transition:0.15s;color:#888;background:#f0efe8
-}
+.note-tab{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:0.15s;color:#888;background:#f0efe8}
 .note-tab.morning.active{background:#d1fae5;color:#065f46;border-color:#10b981}
 .note-tab.evening.active{background:#dbeafe;color:#1e40af;border-color:#3b82f6}
 .note-tab:not(.active):hover{background:#e8e8e0}
 .note-area-wrap{padding:0 20px 20px;flex:1;display:flex;flex-direction:column;gap:10px}
-.note-area{
-  width:100%;min-height:200px;padding:12px;
-  border:1px solid #e0e0d8;border-radius:8px;
-  font-size:13px;color:#333;outline:none;resize:vertical;
-  font-family:'Courier New',monospace;line-height:1.7;
-  background:#fafaf8
-}
+.note-area{width:100%;min-height:200px;padding:12px;border:1px solid #e0e0d8;border-radius:8px;font-size:13px;color:#333;outline:none;resize:vertical;font-family:'Courier New',monospace;line-height:1.7;background:#fafaf8}
 .note-area:focus{border-color:#7C3AED;background:#fff}
-.note-save-row{display:flex;justify-content:flex-end;gap:8px}
+.note-save-row{display:flex;justify-content:flex-end;gap:8px;align-items:center}
 .btn-note-save{padding:8px 20px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600}
 .btn-note-save:hover{background:#6D28D9}
-.note-saved-msg{font-size:12px;color:#10b981;align-self:center;opacity:0;transition:opacity 0.3s}
+.note-saved-msg{font-size:12px;color:#10b981;opacity:0;transition:opacity 0.3s}
 .note-saved-msg.show{opacity:1}
-
-/* ===== EMPTY CELL ===== */
-.cell-empty-hint{
-  position:absolute;bottom:4px;right:6px;
-  font-size:18px;opacity:0;transition:0.15s;color:#ccc
-}
-.cal-cell:hover .cell-empty-hint{opacity:1}
 </style>
 </head>
 <body>
@@ -184,18 +141,26 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
   <div class="global-notebar">🚨 PA không đăng Email ảo — Đăng đúng Form — Vi phạm Sa Thải ngay 🚨</div>
 </div>
 
-<!-- Calendar header -->
 <div class="cal-header">
+  <!-- Nav tháng -->
   <div class="cal-nav">
     <button onclick="changeMonth(-1)">‹</button>
     <span class="cal-title" id="cal-title"></span>
     <button onclick="changeMonth(1)">›</button>
     <button onclick="goToday()" style="font-size:12px;padding:7px 10px">Hôm nay</button>
   </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <input type="date" id="search-date" title="Tìm theo ngày cụ thể">
+    <button class="btn-search" onclick="doSearch()">🔍 Tìm</button>
+    <button class="btn-clear-search" onclick="clearSearch()" id="btn-clear" style="display:none">✕ Xoá</button>
+    <span class="search-result-info" id="search-info"></span>
+  </div>
+
   <button class="btn-add-handover" onclick="openAddModal()">+ Thêm Bàn Giao</button>
 </div>
 
-<!-- Calendar grid -->
 <div class="cal-grid">
   <div class="cal-days-header">
     <div class="cal-day-label sun">CN</div>
@@ -209,11 +174,11 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
   <div class="cal-cells" id="cal-cells"></div>
 </div>
 
-<!-- Modal: Add/Edit Handover -->
+<!-- Modal: Add Handover -->
 <div class="modal-bg" id="modal-add">
   <div class="modal">
     <div class="modal-head">
-      <h3 id="modal-add-title">📋 Thêm Bàn Giao</h3>
+      <h3>📋 Thêm Bàn Giao</h3>
       <button class="modal-close" onclick="closeModal('modal-add')">×</button>
     </div>
     <div class="modal-body">
@@ -270,16 +235,13 @@ import { db, nowStr,
 
 const handoverRef = collection(db, 'handovers');
 
-let handoverData = [];   // [{id, date, shift, note, createdAt}]
+let handoverData = [];
 let currentYear, currentMonth;
 let selectedShift = 'morning';
+let searchDateStr  = null;   // 'YYYY-MM-DD' or null
 
-// current note modal state
-let noteDate = null;
-let noteShift = null;
-let noteEntryId = null;
+let noteDate = null, noteShift = null, noteEntryId = null;
 
-// ── init ──
 const today = new Date();
 currentYear  = today.getFullYear();
 currentMonth = today.getMonth();
@@ -289,71 +251,90 @@ onSnapshot(handoverRef, snap => {
   renderCalendar();
 });
 
-// ── calendar ──
-window.changeMonth = function(dir) {
+// ── nav ──
+window.changeMonth = (dir) => {
   currentMonth += dir;
   if (currentMonth > 11) { currentMonth = 0; currentYear++; }
   if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
   renderCalendar();
 };
-window.goToday = function() {
+window.goToday = () => {
   const t = new Date();
-  currentYear = t.getFullYear();
-  currentMonth = t.getMonth();
+  currentYear = t.getFullYear(); currentMonth = t.getMonth();
   renderCalendar();
 };
 
-function renderCalendar() {
-  const monthNames = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
-                      'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
-  document.getElementById('cal-title').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+// ── search ──
+window.doSearch = () => {
+  const val = document.getElementById('search-date').value;
+  if (!val) return;
+  searchDateStr = val;
+  const [y, m] = val.split('-');
+  currentYear  = +y;
+  currentMonth = +m - 1;
 
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const entry = handoverData.find(e => e.date === val);
+  const info  = entry
+    ? `✅ Tìm thấy bàn giao ngày ${val.split('-').reverse().join('/')}`
+    : `📭 Không có bàn giao ngày ${val.split('-').reverse().join('/')}`;
+  document.getElementById('search-info').textContent = info;
+  document.getElementById('btn-clear').style.display = 'inline-block';
+  renderCalendar();
+};
+
+window.clearSearch = () => {
+  searchDateStr = null;
+  document.getElementById('search-date').value = '';
+  document.getElementById('search-info').textContent = '';
+  document.getElementById('btn-clear').style.display = 'none';
+  renderCalendar();
+};
+
+// ── render ──
+function renderCalendar() {
+  const mNames = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
+                  'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+  document.getElementById('cal-title').textContent = `${mNames[currentMonth]} ${currentYear}`;
+
+  const firstDay    = new Date(currentYear, currentMonth, 1).getDay();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const daysInPrev  = new Date(currentYear, currentMonth, 0).getDate();
-  const todayStr = toDateStr(new Date());
+  const todayStr    = toDateStr(new Date());
 
-  // build date map from handoverData
-  const dateMap = {};  // dateStr -> [{id, shift, note}]
-  handoverData.forEach(r => {
-    if (!dateMap[r.date]) dateMap[r.date] = [];
-    dateMap[r.date].push(r);
-  });
+  const dateMap = {};
+  handoverData.forEach(r => { (dateMap[r.date] = dateMap[r.date] || []).push(r); });
 
   let cells = '';
-  // prev month filler
   for (let i = 0; i < firstDay; i++) {
-    const d = daysInPrev - firstDay + 1 + i;
-    cells += `<div class="cal-cell other-month"><div class="cell-num">${d}</div></div>`;
+    cells += `<div class="cal-cell other-month"><div class="cell-num">${daysInPrev - firstDay + 1 + i}</div></div>`;
   }
-  // current month
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const dow = new Date(currentYear, currentMonth, d).getDay();
-    const isToday = dateStr === todayStr;
+    const dow     = new Date(currentYear, currentMonth, d).getDay();
     const entries = dateMap[dateStr] || [];
+    const isToday = dateStr === todayStr;
+    const isSearch = searchDateStr && dateStr === searchDateStr;
 
-    const numClass = dow === 0 ? 'cell-num sun-num' : dow === 6 ? 'cell-num sat-num' : 'cell-num';
-    const cellClass = isToday ? 'cal-cell today' : 'cal-cell';
+    let cls = 'cal-cell';
+    if (isToday)  cls += ' today';
+    if (isSearch) cls += ' search-highlight';
 
-    let shiftTags = '';
+    const numCls = dow === 0 ? 'cell-num sun-num' : dow === 6 ? 'cell-num sat-num' : 'cell-num';
     const morning = entries.find(e => e.shift === 'morning');
     const evening = entries.find(e => e.shift === 'evening');
-    if (morning) shiftTags += `<div class="shift-tag morning" onclick="openNote(event,'${dateStr}','morning')"><span class="shift-dot"></span>🌅 Ca Sáng</div>`;
-    if (evening) shiftTags += `<div class="shift-tag evening" onclick="openNote(event,'${dateStr}','evening')"><span class="shift-dot"></span>🌙 Ca Tối</div>`;
+    let tags = '';
+    if (morning) tags += `<div class="shift-tag morning" onclick="openNote(event,'${dateStr}','morning')"><span class="shift-dot"></span>🌅 Ca Sáng</div>`;
+    if (evening) tags += `<div class="shift-tag evening" onclick="openNote(event,'${dateStr}','evening')"><span class="shift-dot"></span>🌙 Ca Tối</div>`;
 
-    cells += `<div class="${cellClass}" onclick="openNote(event,'${dateStr}',null)">
-      <div class="${numClass}">${d}</div>
-      <div class="cell-shifts">${shiftTags}</div>
+    cells += `<div class="${cls}" onclick="openNote(event,'${dateStr}',null)">
+      <div class="${numCls}">${d}</div>
+      <div class="cell-shifts">${tags}</div>
       <span class="cell-empty-hint">+</span>
     </div>`;
   }
-  // next month filler
-  const total = firstDay + daysInMonth;
-  const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
-  for (let i = 1; i <= remaining; i++) {
+  const rem = (firstDay + daysInMonth) % 7;
+  for (let i = 1; i <= (rem ? 7 - rem : 0); i++)
     cells += `<div class="cal-cell other-month"><div class="cell-num">${i}</div></div>`;
-  }
 
   document.getElementById('cal-cells').innerHTML = cells;
 }
@@ -363,61 +344,50 @@ function toDateStr(d) {
 }
 
 // ── add modal ──
-window.openAddModal = function() {
-  document.getElementById('modal-add-title').textContent = '📋 Thêm Bàn Giao';
-  document.getElementById('ho-date').value = toDateStr(new Date());
+window.openAddModal = () => {
+  document.getElementById('ho-date').value = searchDateStr || toDateStr(new Date());
   document.getElementById('ho-note').value = '';
   selectShift('morning');
   document.getElementById('modal-add').classList.add('show');
 };
-
-window.selectShift = function(s) {
+window.selectShift = (s) => {
   selectedShift = s;
   document.getElementById('opt-morning').classList.toggle('selected', s === 'morning');
   document.getElementById('opt-evening').classList.toggle('selected', s === 'evening');
 };
-
-window.saveHandover = async function() {
+window.saveHandover = async () => {
   const date = document.getElementById('ho-date').value;
   const note = document.getElementById('ho-note').value.trim();
   if (!date) { alert('Chọn ngày!'); return; }
-
-  // check if entry for this date+shift already exists
   const existing = handoverData.find(e => e.date === date && e.shift === selectedShift);
-  if (existing) {
-    // update note
-    await updateDoc(doc(db, 'handovers', existing.id), { note, updatedAt: nowStr() });
-  } else {
-    await addDoc(handoverRef, { date, shift: selectedShift, note, createdAt: nowStr() });
-  }
+  if (existing) await updateDoc(doc(db,'handovers',existing.id), { note, updatedAt: nowStr() });
+  else          await addDoc(handoverRef, { date, shift: selectedShift, note, createdAt: nowStr() });
   closeModal('modal-add');
 };
 
 // ── note modal ──
-window.openNote = function(e, dateStr, shift) {
+window.openNote = (e, dateStr, shift) => {
   e.stopPropagation();
   noteDate = dateStr;
   const entries = handoverData.filter(x => x.date === dateStr);
-
-  // format date label
   const [y, m, d] = dateStr.split('-');
   const dow = ['CN','T2','T3','T4','T5','T6','T7'][new Date(+y,+m-1,+d).getDay()];
   document.getElementById('note-title').textContent = `📅 Bàn Giao — ${dow} ${d}/${m}/${y}`;
 
-  // build tabs
   const hasMorning = entries.some(e => e.shift === 'morning');
   const hasEvening = entries.some(e => e.shift === 'evening');
+  const activeShift = shift || (hasMorning ? 'morning' : hasEvening ? 'evening' : 'morning');
+
   let tabs = '';
   if (hasMorning || shift === 'morning' || !shift)
-    tabs += `<div class="note-tab morning${(shift==='morning'||(!shift&&hasMorning))?  ' active':''}" onclick="switchNoteTab('morning')">🌅 Ca Sáng</div>`;
+    tabs += `<div class="note-tab morning" onclick="switchNoteTab('morning')">🌅 Ca Sáng</div>`;
   if (hasEvening || shift === 'evening')
-    tabs += `<div class="note-tab evening${shift==='evening'?' active':''}" onclick="switchNoteTab('evening')">🌙 Ca Tối</div>`;
-  if (!tabs) tabs = `<div class="note-tab morning active" onclick="switchNoteTab('morning')">🌅 Ca Sáng</div>
-                     <div class="note-tab evening" onclick="switchNoteTab('evening')">🌙 Ca Tối</div>`;
+    tabs += `<div class="note-tab evening" onclick="switchNoteTab('evening')">🌙 Ca Tối</div>`;
+  if (!tabs)
+    tabs = `<div class="note-tab morning" onclick="switchNoteTab('morning')">🌅 Ca Sáng</div>
+            <div class="note-tab evening" onclick="switchNoteTab('evening')">🌙 Ca Tối</div>`;
   document.getElementById('note-tabs').innerHTML = tabs;
 
-  // load active shift
-  const activeShift = shift || (hasMorning ? 'morning' : hasEvening ? 'evening' : 'morning');
   loadNoteShift(dateStr, activeShift);
   document.getElementById('modal-note').classList.add('show');
 };
@@ -428,25 +398,18 @@ function loadNoteShift(dateStr, shift) {
   noteEntryId = entry ? entry.id : null;
   document.getElementById('note-textarea').value = entry ? entry.note : '';
   document.getElementById('btn-del-entry').style.display = noteEntryId ? 'block' : 'none';
-
-  // update tab active state
-  document.querySelectorAll('.note-tab').forEach(t => {
-    t.classList.toggle('active', t.classList.contains(shift));
-  });
+  document.querySelectorAll('.note-tab').forEach(t => t.classList.toggle('active', t.classList.contains(shift)));
 }
 
-window.switchNoteTab = function(shift) {
-  // auto-save current before switching
-  loadNoteShift(noteDate, shift);
-};
+window.switchNoteTab = (shift) => loadNoteShift(noteDate, shift);
 
-window.saveNote = async function() {
+window.saveNote = async () => {
   const note = document.getElementById('note-textarea').value;
   if (noteEntryId) {
-    await updateDoc(doc(db, 'handovers', noteEntryId), { note, updatedAt: nowStr() });
+    await updateDoc(doc(db,'handovers',noteEntryId), { note, updatedAt: nowStr() });
   } else {
-    const newDoc = await addDoc(handoverRef, { date: noteDate, shift: noteShift, note, createdAt: nowStr() });
-    noteEntryId = newDoc.id;
+    const ref = await addDoc(handoverRef, { date: noteDate, shift: noteShift, note, createdAt: nowStr() });
+    noteEntryId = ref.id;
     document.getElementById('btn-del-entry').style.display = 'block';
   }
   const msg = document.getElementById('note-saved-msg');
@@ -454,21 +417,16 @@ window.saveNote = async function() {
   setTimeout(() => msg.classList.remove('show'), 2000);
 };
 
-window.deleteCurrentEntry = async function() {
-  if (!noteEntryId) return;
-  if (!confirm('Xoá ca này?')) return;
-  await deleteDoc(doc(db, 'handovers', noteEntryId));
+window.deleteCurrentEntry = async () => {
+  if (!noteEntryId || !confirm('Xoá ca này?')) return;
+  await deleteDoc(doc(db,'handovers',noteEntryId));
   noteEntryId = null;
   document.getElementById('note-textarea').value = '';
   document.getElementById('btn-del-entry').style.display = 'none';
-  // remove tab if no more entries for that shift
-  const entries = handoverData.filter(e => e.date === noteDate);
-  if (entries.length === 0) closeModal('modal-note');
+  if (!handoverData.find(e => e.date === noteDate)) closeModal('modal-note');
 };
 
-window.closeModal = function(id) {
-  document.getElementById(id).classList.remove('show');
-};
+window.closeModal = (id) => document.getElementById(id).classList.remove('show');
 </script>
 </body>
 </html>
