@@ -126,6 +126,32 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 .btn-note-save:hover{background:#6D28D9}
 .note-saved-msg{font-size:12px;color:#10b981;opacity:0;transition:opacity 0.3s}
 .note-saved-msg.show{opacity:1}
+
+/* ===== HANDOVER TABLE ===== */
+.handover-section{margin:16px 0;padding:12px;background:#f9f8f5;border-radius:8px;border:1px solid #e8e8e0}
+.handover-section h4{font-size:13px;font-weight:700;color:#333;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.3px}
+.orders-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px}
+.orders-table th{background:#f0efe8;padding:8px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #e0e0d8}
+.orders-table td{padding:8px;border-bottom:1px solid #e8e8e0}
+.orders-table input,.orders-table select{width:100%;padding:5px;border:1px solid #ddd;border-radius:4px;font-size:11px;font-family:Arial,sans-serif;box-sizing:border-box}
+.orders-table input:focus,.orders-table select:focus{border-color:#7C3AED;background:#fff}
+.order-row{display:flex;align-items:center;gap:4px}
+.order-row .btn-del-row{padding:3px 8px;background:#fca5a5;color:#dc2626;border:none;border-radius:4px;font-size:10px;cursor:pointer;font-weight:600}
+.order-row .btn-del-row:hover{background:#fecaca}
+.status-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-weight:600;font-size:10px;white-space:nowrap}
+.status-asking{background:#e0e7ff;color:#4f46e5}
+.status-paid{background:#fee2e2;color:#dc2626}
+.status-delivering{background:#fef3c7;color:#b45309}
+.status-disputed{background:#fce7f3;color:#be185d}
+.status-completed{background:#dcfce7;color:#16a34a}
+.status-request-cancel{background:#ddd6fe;color:#7c3aed}
+.status-others{background:#f3f4f6;color:#6b7280}
+.btn-add-order-row{padding:8px 16px;background:#10b981;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;margin-top:8px}
+.btn-add-order-row:hover{background:#059669}
+.btn-del-row{padding:4px 8px;background:#fca5a5;color:#dc2626;border:none;border-radius:4px;font-size:10px;cursor:pointer;font-weight:600}
+.btn-del-row:hover{background:#fecaca}
+.keep-prev-check{display:flex;align-items:center;gap:6px;font-size:11px;color:#666}
+.keep-prev-check input[type=checkbox]{cursor:pointer;width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -176,7 +202,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 
 <!-- Modal: Add Handover -->
 <div class="modal-bg" id="modal-add">
-  <div class="modal">
+  <div class="modal" style="width:900px;max-height:90vh;overflow-y:auto">
     <div class="modal-head">
       <h3>📋 Thêm Bàn Giao</h3>
       <button class="modal-close" onclick="closeModal('modal-add')">×</button>
@@ -197,9 +223,33 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
           </div>
         </div>
       </div>
+
+      <!-- Danh sách đơn hàng cần chú ý -->
+      <div class="handover-section">
+        <h4>📦 Danh sách đơn hàng cần chú ý</h4>
+        <div style="overflow-x:auto">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th style="width:120px">Tên khách</th>
+                <th style="width:140px">Link chat</th>
+                <th style="width:100px">Code game</th>
+                <th style="width:110px">Trạng thái</th>
+                <th style="width:120px">Khách request</th>
+                <th style="width:90px">Giữ từ trước</th>
+                <th style="width:50px"></th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody">
+            </tbody>
+          </table>
+        </div>
+        <button class="btn-add-order-row" onclick="addOrderRow()">+ Thêm dòng</button>
+      </div>
+
       <div class="form-row">
         <label>Ghi chú nhanh</label>
-        <textarea id="ho-note" placeholder="Nhập nội dung bàn giao...&#10;VD: Hàng còn X acc, lưu ý buyer A đang chờ..." rows="4"></textarea>
+        <textarea id="ho-note" placeholder="Nhập nội dung bàn giao...&#10;VD: Hàng còn X acc, lưu ý buyer A đang chờ..." rows="3"></textarea>
       </div>
     </div>
     <div class="modal-actions">
@@ -211,14 +261,50 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 
 <!-- Modal: Day Note -->
 <div class="modal-bg" id="modal-note">
-  <div class="modal" style="width:480px">
+  <div class="modal" style="width:900px;max-height:90vh;overflow-y:auto">
     <div class="modal-head">
       <h3 id="note-title">📅 Bàn Giao</h3>
       <button class="modal-close" onclick="closeModal('modal-note')">×</button>
     </div>
     <div class="note-shift-tabs" id="note-tabs"></div>
-    <div class="note-area-wrap">
-      <textarea class="note-area" id="note-textarea" placeholder="Chưa có ghi chú..."></textarea>
+    <div class="note-area-wrap" style="padding:0 20px 20px;flex:1;display:flex;flex-direction:column;gap:10px">
+      <!-- Danh sách đơn hàng -->
+      <div class="handover-section" id="orders-display-section" style="margin:0">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <h4 style="margin:0">📦 Danh sách đơn hàng</h4>
+          <button id="btn-edit-orders" onclick="toggleEditOrders()" style="padding:5px 12px;background:#3b82f6;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600">✏️ Sửa</button>
+        </div>
+        <div style="overflow-x:auto;margin-top:10px">
+          <table class="orders-table" id="orders-display-table">
+            <thead>
+              <tr>
+                <th style="width:120px">Tên khách</th>
+                <th style="width:140px">Link chat</th>
+                <th style="width:100px">Code game</th>
+                <th style="width:110px">Trạng thái</th>
+                <th style="width:120px">Khách request</th>
+                <th style="width:90px">Giữ từ trước</th>
+                <th style="width:50px;display:none" id="orders-col-actions"></th>
+              </tr>
+            </thead>
+            <tbody id="orders-display-tbody">
+            </tbody>
+          </table>
+        </div>
+        <p id="no-orders-msg" style="font-size:12px;color:#aaa;text-align:center;padding:12px">Chưa có đơn hàng nào</p>
+        <button id="btn-add-orders-edit" onclick="addViewOrderRow()" style="display:none;padding:8px 16px;background:#10b981;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;margin-top:8px">+ Thêm dòng</button>
+        <div id="orders-save-row" style="display:none;margin-top:10px;justify-content:flex-end;gap:8px;flex-direction:row">
+          <button onclick="cancelEditOrders()" style="padding:8px 16px;background:#f3f4f6;color:#666;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600">Huỷ</button>
+          <button onclick="saveViewOrders()" style="padding:8px 16px;background:#10b981;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600">💾 Lưu bảng</button>
+        </div>
+      </div>
+
+      <!-- Ghi chú -->
+      <div style="flex:1">
+        <label style="font-size:12px;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:5px">Ghi chú ca</label>
+        <textarea class="note-area" id="note-textarea" placeholder="Chưa có ghi chú..."></textarea>
+      </div>
+
       <div class="note-save-row">
         <span class="note-saved-msg" id="note-saved-msg">✓ Đã lưu</span>
         <button class="btn-del-entry" id="btn-del-entry" onclick="deleteCurrentEntry()">🗑 Xoá ca này</button>
@@ -241,6 +327,13 @@ let selectedShift = 'morning';
 let searchDateStr  = null;   // 'YYYY-MM-DD' or null
 
 let noteDate = null, noteShift = null, noteEntryId = null;
+
+// Orders data for the handover form
+let orderRows = [];
+// Orders data for the view/edit modal
+let viewOrderRows = [];
+window.orderRows = orderRows;
+window.viewOrderRows = viewOrderRows;
 
 const today = new Date();
 currentYear  = today.getFullYear();
@@ -343,25 +436,109 @@ function toDateStr(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
+// ── Order rows management ──
+function renderOrdersTable() {
+  const tbody = document.getElementById('orders-tbody');
+  
+  tbody.innerHTML = orderRows.map((row, idx) => {
+    const statusOptions = [
+      { value: 'asking', label: 'Asking' },
+      { value: 'paid', label: 'Paid' },
+      { value: 'delivering', label: 'Delivering' },
+      { value: 'disputed', label: 'Disputed' },
+      { value: 'completed', label: 'Completed' },
+      { value: 'request-cancel', label: 'Request cancel' },
+      { value: 'others', label: 'Others' }
+    ];
+    const statusSelectHtml = statusOptions.map(s => 
+      `<option value="${s.value}" ${row.status === s.value ? 'selected' : ''}>${s.label}</option>`
+    ).join('');
+    
+    return `
+    <tr>
+      <td><input type="text" placeholder="VD: Khách A" value="${row.customer || ''}" oninput="window.orderRows[${idx}].customer = this.value""></td>
+      <td><input type="text" placeholder="Link chat" value="${row.chatLink || ''}" oninput="window.orderRows[${idx}].chatLink = this.value"></td>
+      <td><input type="text" placeholder="Code" value="${row.gameCode || ''}" oninput="window.orderRows[${idx}].gameCode = this.value"></td>
+      <td>
+        <select onchange="window.orderRows[${idx}].status = this.value">
+          ${statusSelectHtml}
+        </select>
+      </td>
+      <td><input type="text" placeholder="Yêu cầu" value="${row.request || ''}" oninput="window.orderRows[${idx}].request = this.value"></td>
+      <td>
+        <label class="keep-prev-check">
+          <input type="checkbox" ${row.keepPrevious ? 'checked' : ''} oninput="window.orderRows[${idx}].keepPrevious = this.checked">
+          <span>Giữ</span>
+        </label>
+      </td>
+      <td>
+        <button class="btn-del-row" onclick="deleteOrderRow(${idx})">✕</button>
+      </td>
+    </tr>
+    `;
+  }).join('');
+}
+
+window.addOrderRow = () => {
+  orderRows.push({ customer: '', chatLink: '', gameCode: '', status: 'asking', request: '', keepPrevious: false });
+  renderOrdersTable();
+};
+
+window.deleteOrderRow = (idx) => {
+  orderRows.splice(idx, 1);
+  renderOrdersTable();
+};
+
 // ── add modal ──
 window.openAddModal = () => {
-  document.getElementById('ho-date').value = searchDateStr || toDateStr(new Date());
+  const dateVal = searchDateStr || toDateStr(new Date());
+  document.getElementById('ho-date').value = dateVal;
   document.getElementById('ho-note').value = '';
+  
+  // Load existing data if editing same date/shift or inherit from previous
+  const existing = handoverData.find(e => e.date === dateVal && e.shift === 'morning');
+  if (existing && existing.orders) {
+    orderRows = JSON.parse(JSON.stringify(existing.orders));
+window.orderRows = orderRows;
+  } else {
+    // Try to load from most recent handover with orders
+    const previous = handoverData
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .find(e => e.orders && e.orders.length > 0);
+    orderRows = previous ? JSON.parse(JSON.stringify(previous.orders)) : [];
+window.orderRows = orderRows;
+  }
+  
+  renderOrdersTable();
   selectShift('morning');
   document.getElementById('modal-add').classList.add('show');
 };
+
 window.selectShift = (s) => {
   selectedShift = s;
   document.getElementById('opt-morning').classList.toggle('selected', s === 'morning');
   document.getElementById('opt-evening').classList.toggle('selected', s === 'evening');
 };
+
 window.saveHandover = async () => {
   const date = document.getElementById('ho-date').value;
   const note = document.getElementById('ho-note').value.trim();
   if (!date) { alert('Chọn ngày!'); return; }
+  
+  // Save all orders including keepPrevious ones
+  const dataToSave = { 
+    note, 
+    orders: orderRows, 
+    updatedAt: nowStr() 
+  };
+  
   const existing = handoverData.find(e => e.date === date && e.shift === selectedShift);
-  if (existing) await updateDoc(doc(db,'handovers',existing.id), { note, updatedAt: nowStr() });
-  else          await addDoc(handoverRef, { date, shift: selectedShift, note, createdAt: nowStr() });
+  
+  if (existing) {
+    await updateDoc(doc(db, 'handovers', existing.id), dataToSave);
+  } else {
+    await addDoc(handoverRef, { date, shift: selectedShift, ...dataToSave, createdAt: nowStr() });
+  }
   closeModal('modal-add');
 };
 
@@ -399,16 +576,141 @@ function loadNoteShift(dateStr, shift) {
   document.getElementById('note-textarea').value = entry ? entry.note : '';
   document.getElementById('btn-del-entry').style.display = noteEntryId ? 'block' : 'none';
   document.querySelectorAll('.note-tab').forEach(t => t.classList.toggle('active', t.classList.contains(shift)));
+  
+  // Load orders for viewing
+  viewOrderRows = entry && entry.orders
+  ? JSON.parse(JSON.stringify(entry.orders))
+  : [];
+
+window.viewOrderRows = viewOrderRows;
+  renderOrdersDisplay(viewOrderRows, false);
 }
+
+function renderOrdersDisplay(orders, editMode) {
+  const tbody = document.getElementById('orders-display-tbody');
+  const noOrdersMsg = document.getElementById('no-orders-msg');
+  const btnEdit = document.getElementById('btn-edit-orders');
+  const btnAddEdit = document.getElementById('btn-add-orders-edit');
+  const saveRow = document.getElementById('orders-save-row');
+  const colActions = document.getElementById('orders-col-actions');
+  
+  if (orders.length === 0 && !editMode) {
+    tbody.innerHTML = '';
+    noOrdersMsg.style.display = 'block';
+    btnEdit.style.display = 'none';
+    return;
+  }
+  
+  noOrdersMsg.style.display = 'none';
+  btnEdit.style.display = editMode ? 'none' : 'block';
+  btnAddEdit.style.display = editMode ? 'block' : 'none';
+  saveRow.style.display = editMode ? 'flex' : 'none';
+  colActions.style.display = editMode ? 'block' : 'none';
+  
+  if (editMode) {
+    const statusOptions = [
+      { value: 'asking', label: 'Asking' },
+      { value: 'paid', label: 'Paid' },
+      { value: 'delivering', label: 'Delivering' },
+      { value: 'disputed', label: 'Disputed' },
+      { value: 'completed', label: 'Completed' },
+      { value: 'request-cancel', label: 'Request cancel' },
+      { value: 'others', label: 'Others' }
+    ];
+    
+    tbody.innerHTML = orders.map((order, idx) => {
+      const statusSelectHtml = statusOptions.map(s => 
+        `<option value="${s.value}" ${order.status === s.value ? 'selected' : ''}>${s.label}</option>`
+      ).join('');
+      
+      return `
+      <tr>
+        <td><input type="text" placeholder="VD: Khách A" value="${order.customer || ''}" oninput="window.viewOrderRows[${idx}].customer = this.value"></td>
+        <td><input type="text" placeholder="Link chat" value="${order.chatLink || ''}" oninput="window.viewOrderRows[${idx}].chatLink = this.value"></td>
+        <td><input type="text" placeholder="Code" value="${order.gameCode || ''}" oninput="window.viewOrderRows[${idx}].gameCode = this.value"></td>
+        <td>
+          <select oninput="window.viewOrderRows[${idx}].status = this.value">
+            ${statusSelectHtml}
+          </select>
+        </td>
+        <td><input type="text" placeholder="Yêu cầu" value="${order.request || ''}" oninput="window.viewOrderRows[${idx}].request = this.value"></td>
+        <td>
+          <label class="keep-prev-check">
+            <input type="checkbox" ${order.keepPrevious ? 'checked' : ''} oninput="window.viewOrderRows[${idx}].keepPrevious = this.checked">
+            <span>Giữ</span>
+          </label>
+        </td>
+        <td>
+          <button class="btn-del-row" onclick="deleteViewOrderRow(${idx})">✕</button>
+        </td>
+      </tr>
+      `;
+    }).join('');
+  } else {
+    tbody.innerHTML = orders.map((order, idx) => `
+      <tr>
+        <td>${order.customer || '-'}</td>
+        <td>${order.chatLink ? `<a href="${order.chatLink}" target="_blank" style="color:#7C3AED;text-decoration:underline">Chat</a>` : '-'}</td>
+        <td>${order.gameCode || '-'}</td>
+        <td><span class="status-badge status-${order.status || 'others'}">${order.status || 'Others'}</span></td>
+        <td>${order.request || '-'}</td>
+        <td style="text-align:center">${order.keepPrevious ? '☑️' : '-'}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+window.toggleEditOrders = () => {
+  renderOrdersDisplay(viewOrderRows, true);
+};
+
+window.cancelEditOrders = () => {
+  // Reload from noteEntryId
+  const entry = handoverData.find(e => e.id === noteEntryId);
+  viewOrderRows = entry && entry.orders ? JSON.parse(JSON.stringify(entry.orders)) : [];
+  renderOrdersDisplay(viewOrderRows, false);
+};
+
+window.addViewOrderRow = () => {
+  viewOrderRows.push({ customer: '', chatLink: '', gameCode: '', status: 'asking', request: '', keepPrevious: false });
+  renderOrdersDisplay(viewOrderRows, true);
+};
+
+window.deleteViewOrderRow = (idx) => {
+  viewOrderRows.splice(idx, 1);
+  renderOrdersDisplay(viewOrderRows, true);
+};
+
+window.saveViewOrders = async () => {
+  if (!noteEntryId) return;
+  await updateDoc(doc(db, 'handovers', noteEntryId), { 
+    orders: viewOrderRows, 
+    updatedAt: nowStr() 
+  });
+  renderOrdersDisplay(viewOrderRows, false);
+  const msg = document.getElementById('note-saved-msg');
+  msg.classList.add('show');
+  setTimeout(() => msg.classList.remove('show'), 2000);
+};
 
 window.switchNoteTab = (shift) => loadNoteShift(noteDate, shift);
 
 window.saveNote = async () => {
   const note = document.getElementById('note-textarea').value;
   if (noteEntryId) {
-    await updateDoc(doc(db,'handovers',noteEntryId), { note, updatedAt: nowStr() });
+    await updateDoc(doc(db,'handovers',noteEntryId), { 
+      note, 
+      orders: viewOrderRows,
+      updatedAt: nowStr() 
+    });
   } else {
-    const ref = await addDoc(handoverRef, { date: noteDate, shift: noteShift, note, createdAt: nowStr() });
+    const ref = await addDoc(handoverRef, { 
+      date: noteDate, 
+      shift: noteShift, 
+      note, 
+      orders: viewOrderRows,
+      createdAt: nowStr() 
+    });
     noteEntryId = ref.id;
     document.getElementById('btn-del-entry').style.display = 'block';
   }
