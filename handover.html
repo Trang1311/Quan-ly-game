@@ -236,7 +236,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
                 <th style="width:100px">Code game</th>
                 <th style="width:110px">Trạng thái</th>
                 <th style="width:120px">Khách request</th>
-                <th style="width:90px">Giữ từ trước</th>
+                <th style="width:90px">Ghi chú</th>
                 <th style="width:50px"></th>
               </tr>
             </thead>
@@ -283,7 +283,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
                 <th style="width:100px">Code game</th>
                 <th style="width:110px">Trạng thái</th>
                 <th style="width:120px">Khách request</th>
-                <th style="width:90px">Giữ từ trước</th>
+                <th style="width:90px">Ghi chú</th>
                 <th style="width:50px;display:none" id="orders-col-actions"></th>
               </tr>
             </thead>
@@ -456,7 +456,7 @@ function renderOrdersTable() {
     
     return `
     <tr>
-      <td><input type="text" placeholder="VD: Khách A" value="${row.customer || ''}" oninput="window.orderRows[${idx}].customer = this.value""></td>
+      <td><input type="text" placeholder="VD: Khách A" value="${row.customer || ''}" oninput="window.orderRows[${idx}].customer = this.value"></td>
       <td><input type="text" placeholder="Link chat" value="${row.chatLink || ''}" oninput="window.orderRows[${idx}].chatLink = this.value"></td>
       <td><input type="text" placeholder="Code" value="${row.gameCode || ''}" oninput="window.orderRows[${idx}].gameCode = this.value"></td>
       <td>
@@ -466,10 +466,11 @@ function renderOrdersTable() {
       </td>
       <td><input type="text" placeholder="Yêu cầu" value="${row.request || ''}" oninput="window.orderRows[${idx}].request = this.value"></td>
       <td>
-        <label class="keep-prev-check">
-          <input type="checkbox" ${row.keepPrevious ? 'checked' : ''} oninput="window.orderRows[${idx}].keepPrevious = this.checked">
-          <span>Giữ</span>
-        </label>
+      <input
+        type="text"
+        placeholder="Ghi chú..."
+        value="${row.note || ''}"
+        oninput="window.orderRows[${idx}].note = this.value">
       </td>
       <td>
         <button class="btn-del-row" onclick="deleteOrderRow(${idx})">✕</button>
@@ -480,7 +481,7 @@ function renderOrdersTable() {
 }
 
 window.addOrderRow = () => {
-  orderRows.push({ customer: '', chatLink: '', gameCode: '', status: 'asking', request: '', keepPrevious: false });
+  orderRows.push({ customer: '', chatLink: '', gameCode: '', status: 'asking', request: '', note: '' });
   renderOrdersTable();
 };
 
@@ -635,10 +636,11 @@ function renderOrdersDisplay(orders, editMode) {
         </td>
         <td><input type="text" placeholder="Yêu cầu" value="${order.request || ''}" oninput="window.viewOrderRows[${idx}].request = this.value"></td>
         <td>
-          <label class="keep-prev-check">
-            <input type="checkbox" ${order.keepPrevious ? 'checked' : ''} oninput="window.viewOrderRows[${idx}].keepPrevious = this.checked">
-            <span>Giữ</span>
-          </label>
+        <input
+          type="text"
+          placeholder="Ghi chú..."
+          value="${order.note || ''}"
+          oninput="window.viewOrderRows[${idx}].note = this.value">
         </td>
         <td>
           <button class="btn-del-row" onclick="deleteViewOrderRow(${idx})">✕</button>
@@ -654,7 +656,9 @@ function renderOrdersDisplay(orders, editMode) {
         <td>${order.gameCode || '-'}</td>
         <td><span class="status-badge status-${order.status || 'others'}">${order.status || 'Others'}</span></td>
         <td>${order.request || '-'}</td>
-        <td style="text-align:center">${order.keepPrevious ? '☑️' : '-'}</td>
+        <td>${order.note || '-'}</td>
+        <td>
+</td>
       </tr>
     `).join('');
   }
@@ -672,7 +676,7 @@ window.cancelEditOrders = () => {
 };
 
 window.addViewOrderRow = () => {
-  viewOrderRows.push({ customer: '', chatLink: '', gameCode: '', status: 'asking', request: '', keepPrevious: false });
+  viewOrderRows.push({ customer: '', chatLink: '', gameCode: '', status: 'asking', request: '', note: '' });
   renderOrdersDisplay(viewOrderRows, true);
 };
 
