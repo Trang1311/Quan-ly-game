@@ -130,8 +130,8 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 /* ===== HANDOVER TABLE ===== */
 .handover-section{margin:16px 0;padding:12px;background:#f9f8f5;border-radius:8px;border:1px solid #e8e8e0}
 .handover-section h4{font-size:13px;font-weight:700;color:#333;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.3px}
-.orders-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px}
-.orders-table th{background:#f0efe8;padding:8px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #e0e0d8}
+.orders-table{width:100%;border-collapse:collapse;table-layout: fixed;font-size:12px;margin-bottom:10px}
+.orders-table th{height: 40px;background:#f0efe8;padding:8px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #e0e0d8}
 .orders-table td{padding:8px;border-bottom:1px solid #e8e8e0}
 .orders-table input,.orders-table select{width:100%;padding:5px;border:1px solid #ddd;border-radius:4px;font-size:11px;font-family:Arial,sans-serif;box-sizing:border-box}
 .orders-table input:focus,.orders-table select:focus{border-color:#7C3AED;background:#fff}
@@ -148,7 +148,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
 .status-others{background:#f3f4f6;color:#6b7280}
 .btn-add-order-row{padding:8px 16px;background:#10b981;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;margin-top:8px}
 .btn-add-order-row:hover{background:#059669}
-.btn-del-row{padding:4px 8px;background:#fca5a5;color:#dc2626;border:none;border-radius:4px;font-size:10px;cursor:pointer;font-weight:600}
+.btn-del-row{padding:3px 8px;background:#fca5a5;color:#dc2626;border:none;border-radius:4px;font-size:10px;cursor:pointer;font-weight:600}
 .btn-del-row:hover{background:#fecaca}
 .keep-prev-check{display:flex;align-items:center;gap:6px;font-size:11px;color:#666}
 .keep-prev-check input[type=checkbox]{cursor:pointer;width:16px;height:16px}
@@ -237,7 +237,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
                 <th style="width:110px">Trạng thái</th>
                 <th style="width:120px">Khách request</th>
                 <th style="width:90px">Ghi chú</th>
-                <th style="width:50px"></th>
+                <th style="width:50px">Xóa</th>
               </tr>
             </thead>
             <tbody id="orders-tbody">
@@ -275,7 +275,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
           <button id="btn-edit-orders" onclick="toggleEditOrders()" style="padding:5px 12px;background:#3b82f6;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600">✏️ Sửa</button>
         </div>
         <div style="overflow-x:auto;margin-top:10px">
-          <table class="orders-table" id="orders-display-table">
+          <table class="orders-table" id="orders-display-table" >
             <thead>
               <tr>
                 <th style="width:120px">Tên khách</th>
@@ -284,7 +284,7 @@ body{font-family:Arial,sans-serif;background:#f5f5f0;color:#333;padding:16px}
                 <th style="width:110px">Trạng thái</th>
                 <th style="width:120px">Khách request</th>
                 <th style="width:90px">Ghi chú</th>
-                <th style="width:50px;display:none" id="orders-col-actions"></th>
+                <th style="width:50px;display:none" id="orders-col-actions">Xóa</th>
               </tr>
             </thead>
             <tbody id="orders-display-tbody">
@@ -606,7 +606,7 @@ function renderOrdersDisplay(orders, editMode) {
   btnEdit.style.display = editMode ? 'none' : 'block';
   btnAddEdit.style.display = editMode ? 'block' : 'none';
   saveRow.style.display = editMode ? 'flex' : 'none';
-  colActions.style.display = editMode ? 'block' : 'none';
+  colActions.style.display = editMode ? 'table-cell' : 'none';
   
   if (editMode) {
     const statusOptions = [
