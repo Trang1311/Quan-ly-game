@@ -18,6 +18,7 @@ export const db  = getFirestore(app);
 
 export const accRef  = collection(db, "games");
 export const postRef = collection(db, "posts");
+export const handoverRef = collection(db, "handovers");
 
 // ── helpers ──
 export function getToday() {
